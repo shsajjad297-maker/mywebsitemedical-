@@ -20,3 +20,44 @@ progress+"%";
 }
 
 
+
+
+function openGuideline(subject){
+
+
+let file="";
+
+
+
+if(subject==="anatomy"){
+
+file="guideline/anatomy.pdf";
+
+}
+
+
+else if(subject==="physiology"){
+
+
+file="guideline/physiology.pdf";
+
+
+}
+
+
+else if(subject==="biochemistry"){
+
+
+file="guideline/biochemistry.pdf";
+
+
+}
+
+
+
+
+window.open(file,"_blank");
+
+
+
+}
