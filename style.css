@@ -755,3 +755,30 @@ background:cyan;
 color:black;
 
 }
+/* Active Navigation */
+
+nav a.active{
+
+background:#00c9ff;
+
+box-shadow:
+
+0 0 12px cyan,
+
+0 0 25px cyan;
+
+}
+
+/* Back To Top Button */
+
+#topBtn{
+
+transition:.4s;
+
+}
+
+#topBtn:hover{
+
+transform:scale(1.15);
+
+}
