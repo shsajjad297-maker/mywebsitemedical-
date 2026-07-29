@@ -1,170 +1,281 @@
-// ==========================
-// SAJJAD'S WEBSITE
-// PART 3
-// ==========================
+/* =====================================
+   SAJJAD'S MEDICAL PORTFOLIO WEBSITE
+   PROFESSIONAL JAVASCRIPT
+===================================== */
 
-// Scroll Animation
 
-const sections = document.querySelectorAll("section");
+document.addEventListener("DOMContentLoaded",()=>{
 
-window.addEventListener("scroll", revealSection);
 
-revealSection();
+/* ==============================
+   SCROLL REVEAL ANIMATION
+============================== */
 
-function revealSection(){
 
-sections.forEach(section=>{
+const sections=document.querySelectorAll("section");
 
-const top=section.getBoundingClientRect().top;
 
-const trigger=window.innerHeight*0.82;
+function revealSections(){
 
-if(top<trigger){
+    const trigger=
+    window.innerHeight * 0.85;
 
-section.classList.add("show");
+
+    sections.forEach(section=>{
+
+
+        const position=
+        section.getBoundingClientRect().top;
+
+
+        if(position < trigger){
+
+            section.classList.add("show");
+
+        }
+
+
+    });
 
 }
 
-});
 
-}
+revealSections();
 
-// ==========================
-// Back To Top Button
-// ==========================
+
+
+/* ==============================
+   BACK TO TOP BUTTON
+============================== */
+
 
 const topBtn=document.createElement("button");
 
-topBtn.innerHTML="⬆";
 
 topBtn.id="topBtn";
 
+topBtn.innerHTML="↑";
+
+
 document.body.appendChild(topBtn);
 
-topBtn.style.position="fixed";
-topBtn.style.bottom="30px";
-topBtn.style.right="30px";
-topBtn.style.width="55px";
-topBtn.style.height="55px";
-topBtn.style.borderRadius="50%";
-topBtn.style.border="none";
-topBtn.style.background="#00c9ff";
-topBtn.style.color="white";
-topBtn.style.fontSize="22px";
-topBtn.style.cursor="pointer";
-topBtn.style.display="none";
-topBtn.style.boxShadow="0 0 20px cyan";
-topBtn.style.zIndex="999";
+
 
 window.addEventListener("scroll",()=>{
 
-if(window.scrollY>300){
 
-topBtn.style.display="block";
+    if(window.scrollY > 400){
 
-}
+        topBtn.style.display="flex";
 
-else{
+    }
 
-topBtn.style.display="none";
+    else{
 
-}
+        topBtn.style.display="none";
 
-});
+    }
 
-topBtn.onclick=()=>{
 
-window.scrollTo({
-
-top:0,
-
-behavior:"smooth"
 
 });
 
-};
 
-// ==========================
-// Navbar Active Link
-// ==========================
 
-const navLinks=document.querySelectorAll("nav a");
+topBtn.addEventListener("click",()=>{
 
-window.addEventListener("scroll",()=>{
+
+    window.scrollTo({
+
+        top:0,
+
+        behavior:"smooth"
+
+    });
+
+
+});
+
+
+
+
+/* ==============================
+   ACTIVE NAVIGATION
+============================== */
+
+
+const navLinks=
+document.querySelectorAll("nav a");
+
+
+
+function activeNavigation(){
+
 
 let current="";
 
+
+
 sections.forEach(section=>{
 
-const top=section.offsetTop-150;
 
-if(window.pageYOffset>=top){
+const sectionTop=
+section.offsetTop - 180;
 
-current=section.getAttribute("id");
+
+
+if(window.scrollY >= sectionTop){
+
+current=section.id;
 
 }
 
+
+
 });
+
+
 
 navLinks.forEach(link=>{
 
+
 link.classList.remove("active");
 
-if(link.getAttribute("href")==="#"+current){
+
+
+if(
+link.getAttribute("href")
+===
+"#"+current
+){
 
 link.classList.add("active");
 
 }
 
-});
+
 
 });
 
-// ==========================
-// Card Hover Effect
-// ==========================
 
-const cards=document.querySelectorAll(".card");
+}
 
-cards.forEach(card=>{
 
-card.addEventListener("mousemove",(e)=>{
 
-const x=e.offsetX;
 
-const y=e.offsetY;
 
-card.style.transform=
+/* ==============================
+   WEBSITE PROGRESS BAR
+============================== */
 
-`rotateX(${(y-100)/20}deg)
- rotateY(${-(x-150)/20}deg)
- scale(1.05)`;
 
-});
+function updateProgress(){
 
-card.addEventListener("mouseleave",()=>{
 
-card.style.transform="rotateX(0) rotateY(0) scale(1)";
+const progressBar=
+document.getElementById("progressBar");
 
-});
 
-});
 
-// ==========================
-// Welcome Message
-// ==========================
+if(progressBar){
 
-console.log("Welcome to Sajjad's Website");
-//========================
-// Progress Bar
-//========================
+
+const height=
+document.documentElement.scrollHeight
+-
+window.innerHeight;
+
+
+
+const progress=
+(window.scrollY / height)*100;
+
+
+
+progressBar.style.width=
+progress+"%";
+
+
+}
+
+
+
+}
+
+
+
+
+/* ==============================
+   OPTIMIZED SCROLL EVENT
+============================== */
+
 
 window.addEventListener("scroll",()=>{
 
-const totalHeight=document.body.scrollHeight-window.innerHeight;
 
-const progress=(window.pageYOffset/totalHeight)*100;
+revealSections();
 
-document.getElementById("progressBar").style.width=progress+"%";
+activeNavigation();
+
+updateProgress();
+
+
+});
+
+
+
+
+/* ==============================
+   CARD INTERACTION
+   (SOFT PROFESSIONAL EFFECT)
+============================== */
+
+
+const cards=
+document.querySelectorAll(".card");
+
+
+
+cards.forEach(card=>{
+
+
+card.addEventListener("mouseenter",()=>{
+
+
+card.style.transform=
+"translateY(-8px)";
+
+
+});
+
+
+
+card.addEventListener("mouseleave",()=>{
+
+
+card.style.transform=
+"translateY(0)";
+
+
+});
+
+
+
+});
+
+
+
+
+
+/* ==============================
+   WELCOME MESSAGE
+============================== */
+
+
+console.log(
+"🩺 Welcome to Sajjad's Medical Portfolio"
+);
+
+
 
 });
