@@ -816,3 +816,13 @@ box-shadow:
 transition:.15s;
 
 }
+#contact a{
+    color:#00ffff;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+#contact a:hover{
+    color:#ffffff;
+    text-shadow:0 0 10px cyan;
+}
