@@ -155,3 +155,16 @@ card.style.transform="rotateX(0) rotateY(0) scale(1)";
 // ==========================
 
 console.log("Welcome to Sajjad's Website");
+//========================
+// Progress Bar
+//========================
+
+window.addEventListener("scroll",()=>{
+
+const totalHeight=document.body.scrollHeight-window.innerHeight;
+
+const progress=(window.pageYOffset/totalHeight)*100;
+
+document.getElementById("progressBar").style.width=progress+"%";
+
+});
