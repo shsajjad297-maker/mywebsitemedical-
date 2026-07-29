@@ -1,55 +1,245 @@
 /* =====================================
-   SAJJAD'S MEDICAL PORTFOLIO WEBSITE
-   PROFESSIONAL JAVASCRIPT
+   SAJJAD'S MEDICAL PORTFOLIO
+   FINAL JAVASCRIPT
 ===================================== */
 
 
 document.addEventListener("DOMContentLoaded",()=>{
 
 
-/* ==============================
-   SCROLL REVEAL ANIMATION
-============================== */
+/* =====================================
+        MOBILE MENU
+===================================== */
 
 
-const sections=document.querySelectorAll("section");
+const menuBtn = document.querySelector(".menu-btn");
+const navMenu = document.querySelector("#navMenu");
 
 
-function revealSections(){
-
-    const trigger=
-    window.innerHeight * 0.85;
+if(menuBtn && navMenu){
 
 
-    sections.forEach(section=>{
+    menuBtn.addEventListener("click",()=>{
 
 
-        const position=
-        section.getBoundingClientRect().top;
+        navMenu.classList.toggle("active");
 
 
-        if(position < trigger){
+        if(navMenu.classList.contains("active")){
 
-            section.classList.add("show");
+            menuBtn.innerHTML="✖";
+
+        }
+
+        else{
+
+            menuBtn.innerHTML="☰";
 
         }
 
 
     });
 
+
+
+    // Close menu after clicking a link
+
+    document.querySelectorAll("nav a")
+    .forEach(link=>{
+
+
+        link.addEventListener("click",()=>{
+
+
+            navMenu.classList.remove("active");
+
+            menuBtn.innerHTML="☰";
+
+
+        });
+
+
+    });
+
+
 }
 
 
-revealSections();
 
 
 
-/* ==============================
-   BACK TO TOP BUTTON
-============================== */
 
 
-const topBtn=document.createElement("button");
+/* =====================================
+        SCROLL REVEAL
+===================================== */
+
+
+const sections =
+document.querySelectorAll("section");
+
+
+
+function revealSections(){
+
+
+    const trigger =
+    window.innerHeight * 0.85;
+
+
+
+    sections.forEach(section=>{
+
+
+        const position =
+        section.getBoundingClientRect().top;
+
+
+
+        if(position < trigger){
+
+
+            section.classList.add("show");
+
+
+        }
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+
+/* =====================================
+        ACTIVE NAVIGATION
+===================================== */
+
+
+const navLinks =
+document.querySelectorAll("nav a");
+
+
+
+function updateActiveLink(){
+
+
+    let current="";
+
+
+
+    sections.forEach(section=>{
+
+
+        const sectionTop =
+        section.offsetTop - 200;
+
+
+
+        if(window.scrollY >= sectionTop){
+
+
+            current = section.id;
+
+
+        }
+
+
+    });
+
+
+
+
+    navLinks.forEach(link=>{
+
+
+        link.classList.remove("active");
+
+
+
+        if(
+        link.getAttribute("href")
+        ===
+        "#"+current
+        ){
+
+
+            link.classList.add("active");
+
+
+        }
+
+
+    });
+
+
+}
+
+
+
+
+
+
+
+
+/* =====================================
+        SCROLL PROGRESS BAR
+===================================== */
+
+
+function updateProgress(){
+
+
+    const progressBar =
+    document.getElementById("progressBar");
+
+
+
+    if(progressBar){
+
+
+
+        const scrollHeight =
+        document.documentElement.scrollHeight
+        -
+        window.innerHeight;
+
+
+
+        const progress =
+        (window.scrollY / scrollHeight) * 100;
+
+
+
+        progressBar.style.width =
+        progress + "%";
+
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+/* =====================================
+        BACK TO TOP BUTTON
+===================================== */
+
+
+const topBtn =
+document.createElement("button");
 
 
 topBtn.id="topBtn";
@@ -61,24 +251,29 @@ document.body.appendChild(topBtn);
 
 
 
+
 window.addEventListener("scroll",()=>{
 
 
     if(window.scrollY > 400){
 
+
         topBtn.style.display="flex";
+
 
     }
 
     else{
 
+
         topBtn.style.display="none";
+
 
     }
 
 
-
 });
+
 
 
 
@@ -99,139 +294,16 @@ topBtn.addEventListener("click",()=>{
 
 
 
-/* ==============================
-   ACTIVE NAVIGATION
-============================== */
 
 
-const navLinks=
-document.querySelectorAll("nav a");
 
 
+/* =====================================
+        SOFT CARD EFFECT
+===================================== */
 
-function activeNavigation(){
 
-
-let current="";
-
-
-
-sections.forEach(section=>{
-
-
-const sectionTop=
-section.offsetTop - 180;
-
-
-
-if(window.scrollY >= sectionTop){
-
-current=section.id;
-
-}
-
-
-
-});
-
-
-
-navLinks.forEach(link=>{
-
-
-link.classList.remove("active");
-
-
-
-if(
-link.getAttribute("href")
-===
-"#"+current
-){
-
-link.classList.add("active");
-
-}
-
-
-
-});
-
-
-}
-
-
-
-
-
-/* ==============================
-   WEBSITE PROGRESS BAR
-============================== */
-
-
-function updateProgress(){
-
-
-const progressBar=
-document.getElementById("progressBar");
-
-
-
-if(progressBar){
-
-
-const height=
-document.documentElement.scrollHeight
--
-window.innerHeight;
-
-
-
-const progress=
-(window.scrollY / height)*100;
-
-
-
-progressBar.style.width=
-progress+"%";
-
-
-}
-
-
-
-}
-
-
-
-
-/* ==============================
-   OPTIMIZED SCROLL EVENT
-============================== */
-
-
-window.addEventListener("scroll",()=>{
-
-
-revealSections();
-
-activeNavigation();
-
-updateProgress();
-
-
-});
-
-
-
-
-/* ==============================
-   CARD INTERACTION
-   (SOFT PROFESSIONAL EFFECT)
-============================== */
-
-
-const cards=
+const cards =
 document.querySelectorAll(".card");
 
 
@@ -239,56 +311,70 @@ document.querySelectorAll(".card");
 cards.forEach(card=>{
 
 
-card.addEventListener("mouseenter",()=>{
+    card.addEventListener("mouseenter",()=>{
 
 
-card.style.transform=
-"translateY(-8px)";
+        card.style.transform=
+        "translateY(-8px)";
+
+
+    });
+
+
+
+    card.addEventListener("mouseleave",()=>{
+
+
+        card.style.transform=
+        "translateY(0)";
+
+
+    });
 
 
 });
 
 
 
-card.addEventListener("mouseleave",()=>{
 
 
-card.style.transform=
-"translateY(0)";
+
+
+
+/* =====================================
+        OPTIMIZED SCROLL LISTENER
+===================================== */
+
+
+window.addEventListener("scroll",()=>{
+
+
+    revealSections();
+
+    updateActiveLink();
+
+    updateProgress();
 
 
 });
 
 
 
-});
 
+/* Initial Load */
 
+revealSections();
 
+updateActiveLink();
 
+updateProgress();
 
-/* ==============================
-   WELCOME MESSAGE
-============================== */
 
 
 console.log(
-"🩺 Welcome to Sajjad's Medical Portfolio"
+"🩺 Sajjad's Medical Portfolio Loaded Successfully"
 );
 
 
-
-});
-// ==============================
-// MOBILE MENU TOGGLE
-// ==============================
-
-const menuBtn = document.querySelector(".menu-btn");
-const navMenu = document.querySelector("#navMenu");
-
-
-menuBtn.addEventListener("click", ()=>{
-
-    navMenu.classList.toggle("active");
 
 });
