@@ -3,1046 +3,779 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedPulse | Medical Learning Portal</title>
-    <!-- Google Fonts & FontAwesome Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>MedPulse Academy | Professional Medical Learning Platform</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                            dark: '#0a192f',
+                            card: '#112240',
+                            accent: '#14b8a6'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --bg-dark: #090d16;
-            --bg-card: rgba(18, 26, 43, 0.75);
-            --bg-card-hover: rgba(26, 38, 63, 0.85);
-            --border-glass: rgba(255, 255, 255, 0.08);
-            --primary-teal: #00f2fe;
-            --primary-blue: #4facfe;
-            --accent-purple: #7f53ac;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --radius-lg: 20px;
-            --radius-md: 12px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            overflow-x: hidden;
+            background-color: #060d19;
+            color: #e2e8f0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(127, 83, 172, 0.08) 0%, transparent 40%);
+                radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(20, 184, 166, 0.1) 0px, transparent 50%);
             background-attachment: fixed;
         }
-
-        /* Ambient Animated Particles Background */
-        .ambient-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .glow-orb {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.15;
-            animation: floatOrb 20s infinite alternate ease-in-out;
-        }
-
-        .orb-1 { background: var(--primary-teal); top: -100px; left: -100px; }
-        .orb-2 { background: var(--accent-purple); bottom: -100px; right: -100px; animation-delay: -10s; }
-
-        @keyframes floatOrb {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(80px, 60px) scale(1.2); }
-        }
-
-        /* Container & Structure */
-        .wrapper {
-            position: relative;
-            z-index: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        /* Header Styling */
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-            animation: fadeInDown 0.8s ease-out;
-        }
-
-        .badge-prof {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 16px;
-            border-radius: 50px;
-            background: rgba(0, 242, 254, 0.1);
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            color: var(--primary-teal);
-            font-size: 0.85rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            margin-bottom: 16px;
-            text-transform: uppercase;
-        }
-
-        header h1 {
-            font-size: 2.8rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
-        }
-
-        header p {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Tab Navigation */
-        .tab-nav {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glass);
-            color: var(--text-muted);
-            padding: 14px 28px;
-            border-radius: var(--radius-md);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            backdrop-filter: blur(12px);
-        }
-
-        .tab-btn:hover {
-            color: var(--text-main);
-            border-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, rgba(0, 242, 254, 0.15), rgba(79, 172, 254, 0.15));
-            border-color: var(--primary-teal);
-            color: #ffffff;
-            box-shadow: 0 8px 25px -5px rgba(0, 242, 254, 0.25);
-        }
-
-        /* Main Subject Card Layout */
-        .tab-content {
-            display: none;
-            animation: fadeInUp 0.5s ease-out forwards;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .subject-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-bottom: 30px;
-        }
-
-        @media (max-width: 868px) {
-            .subject-grid { grid-template-columns: 1fr; }
-        }
-
-        /* Glassmorphic Panel Cards */
         .glass-panel {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-lg);
-            padding: 30px;
+            background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(16px);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-
-        .glass-panel:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .panel-header {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            margin-bottom: 20px;
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 12px 30px -10px rgba(2, 132, 199, 0.3);
         }
-
-        .panel-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--primary-teal), var(--primary-blue));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            color: #000;
+        .active-tab {
+            background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(2, 132, 199, 0.4);
         }
-
-        .panel-header h2 {
-            font-size: 1.4rem;
-            font-weight: 700;
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
         }
-
-        .instruction-banner {
-            background: rgba(255, 255, 255, 0.03);
-            border-left: 3px solid var(--primary-teal);
-            padding: 12px 16px;
-            border-radius: 6px;
-            font-size: 0.92rem;
-            color: #e2e8f0;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
         }
-
-        /* Resource Links */
-        .resource-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .resource-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-glass);
-            padding: 16px 20px;
-            border-radius: var(--radius-md);
-            text-decoration: none;
-            color: var(--text-main);
-            transition: var(--transition);
-        }
-
-        .resource-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--primary-teal);
-            transform: translateX(6px);
-        }
-
-        .resource-info {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-
-        .resource-info i {
-            color: #ff0000;
-            font-size: 1.5rem;
-        }
-
-        .resource-title {
-            font-weight: 600;
-            font-size: 0.98rem;
-        }
-
-        .resource-desc {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-        }
-
-        /* Action Buttons */
-        .btn-guideline {
-            width: 100%;
-            background: linear-gradient(135deg, rgba(0, 242, 254, 0.1), rgba(79, 172, 254, 0.1));
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            color: var(--primary-teal);
-            padding: 14px 24px;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: var(--transition);
-            margin-top: 15px;
-        }
-
-        .btn-guideline:hover {
-            background: linear-gradient(135deg, var(--primary-teal), var(--primary-blue));
-            color: #000;
-            border-color: transparent;
-            box-shadow: 0 10px 20px -5px rgba(0, 242, 254, 0.3);
-        }
-
-        /* Guidelines Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(4, 7, 13, 0.85);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition);
-            padding: 20px;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal-content {
-            background: #0f172a;
-            border: 1px solid var(--border-glass);
-            border-radius: var(--radius-lg);
-            max-width: 650px;
-            width: 100%;
-            padding: 30px;
-            position: relative;
-            transform: scale(0.9);
-            transition: var(--transition);
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .modal-close:hover { color: var(--text-main); }
-
-        .guideline-item {
-            margin-top: 15px;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: var(--radius-md);
-            border-left: 3px solid var(--primary-teal);
-        }
-
-        /* Interactive Quiz Section */
-        .quiz-panel {
-            grid-column: 1 / -1;
-        }
-
-        .quiz-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            border-bottom: 1px solid var(--border-glass);
-            padding-bottom: 16px;
-        }
-
-        .quiz-progress {
-            font-size: 0.9rem;
-            color: var(--primary-teal);
-            font-weight: 600;
-        }
-
-        .question-text {
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        @media (max-width: 600px) {
-            .options-grid { grid-template-columns: 1fr; }
-        }
-
-        .option-btn {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glass);
-            padding: 14px 18px;
-            border-radius: var(--radius-md);
-            color: var(--text-main);
-            text-align: left;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .option-btn:hover:not(:disabled) {
-            background: var(--bg-card-hover);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .option-btn.selected {
-            border-color: var(--primary-teal);
-            background: rgba(0, 242, 254, 0.1);
-        }
-
-        .option-btn.correct {
-            background: rgba(16, 185, 129, 0.15) !important;
-            border-color: var(--success) !important;
-            color: #34d399;
-        }
-
-        .option-btn.incorrect {
-            background: rgba(239, 68, 68, 0.15) !important;
-            border-color: var(--danger) !important;
-            color: #f87171;
-        }
-
-        .option-prefix {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.85rem;
-        }
-
-        .quiz-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn-action {
-            background: linear-gradient(135deg, var(--primary-teal), var(--primary-blue));
-            color: #000;
-            border: none;
-            padding: 12px 28px;
-            border-radius: var(--radius-md);
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn-action:hover {
-            opacity: 0.9;
-            box-shadow: 0 8px 20px -5px rgba(0, 242, 254, 0.4);
-        }
-
-        /* Quiz Results Dashboard */
-        .results-card {
-            text-align: center;
-            padding: 20px;
-        }
-
-        .score-gauge {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--primary-teal);
-            margin: 15px 0;
-        }
-
-        .results-summary {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 20px 0 30px;
-        }
-
-        .stat-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-glass);
-            padding: 16px 24px;
-            border-radius: var(--radius-md);
-        }
-
-        .stat-val {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .stat-val.correct { color: var(--success); }
-        .stat-val.incorrect { color: var(--danger); }
-
-        /* Upcoming Subjects Badge Footer */
-        .upcoming-banner {
-            margin-top: 50px;
-            background: linear-gradient(135deg, rgba(127, 83, 172, 0.1), rgba(245, 158, 11, 0.08));
-            border: 1px dashed rgba(255, 255, 255, 0.15);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            animation: pulseGlow 3s infinite alternate;
-        }
-
-        @keyframes pulseGlow {
-            0% { border-color: rgba(255, 255, 255, 0.1); }
-            100% { border-color: rgba(0, 242, 254, 0.3); }
-        }
-
-        .upcoming-badge {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--warning);
-            padding: 4px 12px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        /* Animations */
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #0284c7;
+            border-radius: 4px;
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between custom-scrollbar">
 
-    <!-- Ambient Particles -->
-    <div class="ambient-bg">
-        <div class="glow-orb orb-1"></div>
-        <div class="glow-orb orb-2"></div>
-    </div>
-
-    <div class="wrapper">
-        <!-- Site Header -->
-        <header>
-            <div class="badge-prof">
-                <i class="fa-solid fa-stethoscope"></i> Premium Medical Learning Engine
-            </div>
-            <h1>Medical Learning Portal</h1>
-            <p>Curated Video Resources, Board Guidelines & Interactive Quiz Suite for Medical Students</p>
-        </header>
-
-        <!-- Subject Navigation Tabs -->
-        <nav class="tab-nav">
-            <button class="tab-btn active" onclick="switchTab('anatomy')">
-                <i class="fa-solid fa-bone"></i> Anatomy
-            </button>
-            <button class="tab-btn" onclick="switchTab('physiology')">
-                <i class="fa-solid fa-heart-pulse"></i> Physiology
-            </button>
-            <button class="tab-btn" onclick="switchTab('biochemistry')">
-                <i class="fa-solid fa-dna"></i> Biochemistry
-            </button>
-        </nav>
-
-        <!-- ================= ANATOMY TAB ================= -->
-        <div id="tab-anatomy" class="tab-content active">
-            <div class="subject-grid">
-                <!-- Video Resources Panel -->
-                <div class="glass-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon"><i class="fa-solid fa-video"></i></div>
-                        <div>
-                            <h2>Anatomy Video Hub</h2>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Curated Lecture Series</span>
-                        </div>
-                    </div>
-                    <div class="instruction-banner">
-                        <i class="fa-solid fa-circle-info"></i> Click below to see video in this particular subject
-                    </div>
-                    <div class="resource-list">
-                        <a href="https://www.youtube.com/@drvirenkariya" target="_blank" class="resource-card">
-                            <div class="resource-info">
-                                <i class="fa-brands fa-youtube"></i>
-                                <div>
-                                    <div class="resource-title">Dr. Viren Kariya</div>
-                                    <div class="resource-desc">Bone & Osteology Complete Series</div>
-                                </div>
-                            </div>
-                            <i class="fa-solid fa-arrow-up-right-from-square" style="color: var(--text-muted);"></i>
-                        </a>
-                        <a href="https://www.youtube.com/@WELIKEANATOMY" target="_blank" class="resource-card">
-                            <div class="resource-info">
-                                <i class="fa-brands fa-youtube"></i>
-                                <div>
-                                    <div class="resource-title">WE LIKE ANATOMY</div>
-                                    <div class="resource-desc">Comprehensive Gross & Systemic Anatomy</div>
-                                </div>
-                            </div>
-                            <i class="fa-solid fa-arrow-up-right-from-square" style="color: var(--text-muted);"></i>
-                        </a>
-                    </div>
+    <!-- Top Navigation Header -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchSubject('anatomy')">
+                <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-sky-500 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-sky-500/30">
+                    <i class="fa-solid fa-user-doctor text-xl"></i>
                 </div>
+                <div>
+                    <span class="text-xl font-bold tracking-wider text-white flex items-center gap-1.5">
+                        MedPulse <span class="text-xs bg-sky-500/20 text-sky-400 border border-sky-500/30 px-2 py-0.5 rounded-full font-semibold">PRO</span>
+                    </span>
+                    <p class="text-xs text-slate-400">Medical Professional Portal</p>
+                </div>
+            </div>
 
-                <!-- Guidelines Panel -->
-                <div class="glass-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon"><i class="fa-solid fa-book-bookmark"></i></div>
-                        <div>
-                            <h2>Subject Guideline</h2>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Examination Strategy</span>
-                        </div>
-                    </div>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
-                        Master gross anatomy, histology, and embryology with high-yield dissection diagrams and osteology preparations for professional exams.
-                    </p>
-                    <button class="btn-guideline" onclick="openGuideline('anatomy')">
-                        <i class="fa-solid fa-compass"></i> Click to View Anatomy Guideline
+            <!-- Subject Navigation Tabs -->
+            <nav class="hidden md:flex items-center space-x-2 bg-slate-900/80 p-1.5 rounded-2xl border border-slate-800">
+                <button onclick="switchSubject('anatomy')" id="tab-anatomy" class="tab-btn active-tab px-6 py-2.5 rounded-xl font-semibold text-sm transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-bone text-xs"></i> Anatomy
+                </button>
+                <button onclick="switchSubject('physiology')" id="tab-physiology" class="tab-btn px-6 py-2.5 rounded-xl font-semibold text-sm text-slate-400 hover:text-white transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-heart-pulse text-xs"></i> Physiology
+                </button>
+                <button onclick="switchSubject('biochemistry')" id="tab-biochemistry" class="tab-btn px-6 py-2.5 rounded-xl font-semibold text-sm text-slate-400 hover:text-white transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-dna text-xs"></i> Biochemistry
+                </button>
+            </nav>
+
+            <!-- User Auth & Stats Section -->
+            <div class="flex items-center space-x-3">
+                <button onclick="openLeaderboard()" class="px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-amber-400 border border-amber-500/20 text-sm font-semibold flex items-center gap-2 transition-all">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span class="hidden sm:inline">Leaderboard</span>
+                </button>
+                
+                <div id="user-profile-btn" class="relative">
+                    <button onclick="openAuthModal()" id="login-trigger-btn" class="px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-semibold text-sm transition-all shadow-lg shadow-sky-600/30 flex items-center gap-2">
+                        <i class="fa-solid fa-right-to-bracket"></i> Login
                     </button>
                 </div>
-
-                <!-- Interactive Quiz Panel -->
-                <div class="glass-panel quiz-panel">
-                    <div class="quiz-header">
-                        <div>
-                            <h2 style="font-size: 1.3rem;"><i class="fa-solid fa-brain" style="color: var(--primary-teal); margin-right: 8px;"></i> Anatomy Self-Assessment Quiz</h2>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">10 Randomly Shuffled MCQs</span>
-                        </div>
-                        <div class="quiz-progress" id="anatomy-progress">Question 1 of 10</div>
-                    </div>
-                    <div id="anatomy-quiz-body">
-                        <!-- Dynamic Quiz Content Inserted via JS -->
-                    </div>
-                </div>
             </div>
         </div>
 
-        <!-- ================= PHYSIOLOGY TAB ================= -->
-        <div id="tab-physiology" class="tab-content">
-            <div class="subject-grid">
-                <!-- Video Resources Panel -->
-                <div class="glass-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon"><i class="fa-solid fa-video"></i></div>
-                        <div>
-                            <h2>Physiology Video Hub</h2>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Curated Lecture Series</span>
-                        </div>
-                    </div>
-                    <div class="instruction-banner">
-                        <i class="fa-solid fa-circle-info"></i> Click below to see video in this particular subject
-                    </div>
-                    <div class="resource-list">
-                        <a href="https://www.youtube.com/@physiologyr_golpokotha" target="_blank" class="resource-card">
-                            <div class="resource-info">
-                                <i class="fa-brands fa-youtube"></i>
-                                <div>
-                                    <div class="resource-title">Physiology er Golpo Kotha</div>
-                                    <div class="resource-desc">Simplified Conceptual Physiology Lectures</div>
-                                </div>
-                            </div>
-                            <i class="fa-solid fa-arrow-up-right-from-square" style="color: var(--text-muted);"></i>
-                        </a>
-                    </div>
-                </div>
+        <!-- Mobile Subject Tabs -->
+        <div class="md:hidden flex justify-around bg-slate-900/95 border-t border-slate-800 p-2">
+            <button onclick="switchSubject('anatomy')" id="mob-tab-anatomy" class="text-xs px-3 py-2 rounded-lg active-tab">Anatomy</button>
+            <button onclick="switchSubject('physiology')" id="mob-tab-physiology" class="text-xs px-3 py-2 rounded-lg text-slate-400">Physiology</button>
+            <button onclick="switchSubject('biochemistry')" id="mob-tab-biochemistry" class="text-xs px-3 py-2 rounded-lg text-slate-400">Biochemistry</button>
+        </div>
+    </header>
 
-                <!-- Guidelines Panel -->
-                <div class="glass-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon"><i class="fa-solid fa-book-bookmark"></i></div>
-                        <div>
-                            <h2>Subject Guideline</h2>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Examination Strategy</span>
-                        </div>
-                    </div>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
-                        Understand homeostatic mechanisms, organ system interactions, and clinical physiology flowcharts for viva and written exams.
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <!-- Welcome Banner / Active User Overview -->
+        <div class="glass-panel rounded-3xl p-6 sm:p-8 mb-8 relative overflow-hidden border border-slate-800">
+            <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-sky-400 bg-sky-500/10 px-3 py-1 rounded-full border border-sky-500/20">
+                        High Yield Academic Hub
+                    </span>
+                    <h1 class="text-2xl sm:text-4xl font-extrabold text-white mt-3 tracking-tight" id="welcome-title">
+                        Welcome, Future Doctor!
+                    </h1>
+                    <p class="text-slate-400 text-sm sm:text-base mt-2 max-w-2xl">
+                        Select a core subject tab to access curated lectures, official study guidelines, and test your knowledge with interactive shuffled quizzes.
                     </p>
-                    <button class="btn-guideline" onclick="openGuideline('physiology')">
-                        <i class="fa-solid fa-compass"></i> Click to View Physiology Guideline
-                    </button>
                 </div>
-
-                <!-- Interactive Quiz Panel -->
-                <div class="glass-panel quiz-panel">
-                    <div class="quiz-header">
-                        <div>
-                            <h2 style="font-size: 1.3rem;"><i class="fa-solid fa-brain" style="color: var(--primary-teal); margin-right: 8px;"></i> Physiology Self-Assessment Quiz</h2>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">10 Randomly Shuffled MCQs</span>
-                        </div>
-                        <div class="quiz-progress" id="physiology-progress">Question 1 of 10</div>
+                
+                <div class="flex items-center gap-4 bg-slate-900/70 p-4 rounded-2xl border border-slate-800/80 shrink-0">
+                    <div class="text-center px-3 border-r border-slate-800">
+                        <span class="block text-xl font-bold text-sky-400" id="stat-visits">0</span>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-wider">Visits</span>
                     </div>
-                    <div id="physiology-quiz-body">
-                        <!-- Dynamic Quiz Content Inserted via JS -->
+                    <div class="text-center px-3 border-r border-slate-800">
+                        <span class="block text-xl font-bold text-teal-400" id="stat-exams">0</span>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-wider">Quizzes</span>
+                    </div>
+                    <div class="text-center px-3">
+                        <span class="block text-xl font-bold text-amber-400" id="stat-score">0%</span>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-wider">Avg Score</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= BIOCHEMISTRY TAB ================= -->
-        <div id="tab-biochemistry" class="tab-content">
-            <div class="subject-grid">
-                <!-- Video Resources Panel -->
-                <div class="glass-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon"><i class="fa-solid fa-video"></i></div>
-                        <div>
-                            <h2>Biochemistry Video Hub</h2>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Curated Lecture Series</span>
-                        </div>
-                    </div>
-                    <div class="instruction-banner">
-                        <i class="fa-solid fa-circle-info"></i> Click below to see video in this particular subject
-                    </div>
-                    <div class="resource-list">
-                        <a href="https://www.youtube.com/@tajwarhasnatthuha4937/playlists" target="_blank" class="resource-card">
-                            <div class="resource-info">
-                                <i class="fa-brands fa-youtube"></i>
-                                <div>
-                                    <div class="resource-title">Tajwar Hasnat Thuha</div>
-                                    <div class="resource-desc">Medical Biochemistry Playlists & Pathways</div>
-                                </div>
-                            </div>
-                            <i class="fa-solid fa-arrow-up-right-from-square" style="color: var(--text-muted);"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Guidelines Panel -->
-                <div class="glass-panel">
-                    <div class="panel-header">
-                        <div class="panel-icon"><i class="fa-solid fa-book-bookmark"></i></div>
-                        <div>
-                            <h2>Subject Guideline</h2>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Examination Strategy</span>
-                        </div>
-                    </div>
-                    <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
-                        Focus on metabolic pathways, molecular biology concepts, enzymatic regulation, and clinical lab report interpretations.
-                    </p>
-                    <button class="btn-guideline" onclick="openGuideline('biochemistry')">
-                        <i class="fa-solid fa-compass"></i> Click to View Biochemistry Guideline
-                    </button>
-                </div>
-
-                <!-- Interactive Quiz Panel -->
-                <div class="glass-panel quiz-panel">
-                    <div class="quiz-header">
-                        <div>
-                            <h2 style="font-size: 1.3rem;"><i class="fa-solid fa-brain" style="color: var(--primary-teal); margin-right: 8px;"></i> Biochemistry Self-Assessment Quiz</h2>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">10 Randomly Shuffled MCQs</span>
-                        </div>
-                        <div class="quiz-progress" id="biochemistry-progress">Question 1 of 10</div>
-                    </div>
-                    <div id="biochemistry-quiz-body">
-                        <!-- Dynamic Quiz Content Inserted via JS -->
-                    </div>
-                </div>
-            </div>
+        <!-- Subject Content Container -->
+        <div id="subject-content-area" class="space-y-10">
+            <!-- Dynamic Content rendered via JavaScript -->
         </div>
 
-        <!-- Upcoming Subjects Banner -->
-        <div class="upcoming-banner">
-            <span class="upcoming-badge">Expansion Coming Soon</span>
-            <span style="font-weight: 600; color: #cbd5e1;">Pharmacology, Pathology, Microbiology will be added soon</span>
-        </div>
-    </div>
+    </main>
 
-    <!-- Guideline Popup Modal -->
-    <div id="guideline-modal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeGuideline()"><i class="fa-solid fa-xmark"></i></button>
-            <h2 id="modal-title" style="color: var(--primary-teal); margin-bottom: 10px;">Subject Guideline</h2>
-            <div id="modal-body">
-                <!-- Injected via JS -->
+    <!-- Bottom Bar: Upcoming Subjects -->
+    <div class="glass-panel border-t border-slate-800/80 py-4 my-6">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 mr-3">Upcoming Subjects:</span>
+            <div class="inline-flex flex-wrap justify-center gap-2 mt-2 sm:mt-0">
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-800/80 text-teal-400 border border-teal-500/20 flex items-center gap-1.5">
+                    <i class="fa-solid fa-pills text-[10px]"></i> Pharmacology
+                </span>
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-800/80 text-rose-400 border border-rose-500/20 flex items-center gap-1.5">
+                    <i class="fa-solid fa-microscope text-[10px]"></i> Pathology
+                </span>
+                <span class="px-3 py-1 rounded-full text-xs font-medium bg-slate-800/80 text-amber-400 border border-amber-500/20 flex items-center gap-1.5">
+                    <i class="fa-solid fa-virus text-[10px]"></i> Microbiology
+                </span>
+                <span class="text-xs text-sky-400 font-semibold self-center ml-2">Will be added soon!</span>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Engine -->
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p>&copy; 2026 MedPulse Academy. Designed for Medical Professionals.</p>
+            <p class="flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-sky-500"></i> Encrypted Student Portal
+            </p>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: Authentication (Login / Register) -->
+    <div id="auth-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-panel w-full max-w-md rounded-3xl p-6 sm:p-8 border border-slate-700 shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-sky-500/20 border border-sky-500/30 text-sky-400 rounded-2xl flex items-center justify-center mx-auto mb-3 text-xl">
+                    <i class="fa-solid fa-user-graduate"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white">Student Login / Register</h3>
+                <p class="text-xs text-slate-400 mt-1">Enter details to access personalized tracking & leaderboard</p>
+            </div>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Student Full Name</label>
+                    <input type="text" id="input-name" required placeholder="e.g. Sajjad Hossain" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Medical College Name</label>
+                    <input type="text" id="input-college" required placeholder="e.g. Dhaka Medical College" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Number</label>
+                    <input type="tel" id="input-mobile" required placeholder="017XXXXXXXX" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                    <input type="password" id="input-password" required placeholder="••••••••" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-sky-500">
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-sky-600 to-teal-500 hover:from-sky-500 hover:to-teal-400 text-white font-bold py-3 rounded-xl shadow-lg transition-all text-sm mt-2">
+                    Enter Portal
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Interactive Quiz Runner -->
+    <div id="quiz-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-panel w-full max-w-2xl rounded-3xl p-6 sm:p-8 border border-slate-700 shadow-2xl relative max-h-[90vh] flex flex-col">
+            <!-- Header -->
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <div>
+                    <span id="quiz-subject-badge" class="text-xs font-bold uppercase tracking-wider text-sky-400 bg-sky-500/10 px-2.5 py-1 rounded-md border border-sky-500/20">
+                        Anatomy
+                    </span>
+                    <h3 class="text-xl font-bold text-white mt-1">10-Question Random MCQ Assessment</h3>
+                </div>
+                <button onclick="closeQuizModal()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Quiz Screen -->
+            <div id="quiz-body" class="py-6 overflow-y-auto custom-scrollbar flex-grow space-y-6">
+                <!-- Dynamically generated question -->
+            </div>
+
+            <!-- Quiz Navigation Footer -->
+            <div id="quiz-footer" class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                <span id="quiz-progress-text" class="text-xs font-semibold text-slate-400">Question 1 of 10</span>
+                <button id="quiz-next-btn" onclick="nextQuestion()" class="px-6 py-2.5 bg-sky-600 hover:bg-sky-500 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-sky-600/30">
+                    Next Question <i class="fa-solid fa-arrow-right ml-1"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Quiz Results Summary -->
+    <div id="result-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-panel w-full max-w-lg rounded-3xl p-6 sm:p-8 border border-slate-700 text-center relative shadow-2xl">
+            <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
+                <i class="fa-solid fa-square-check"></i>
+            </div>
+            <h3 class="text-2xl font-extrabold text-white">Assessment Complete!</h3>
+            <p class="text-slate-400 text-sm mt-1" id="result-subject-title">Subject Assessment Summary</p>
+
+            <div class="grid grid-cols-2 gap-4 my-6">
+                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                    <span class="text-2xl font-bold text-emerald-400" id="res-correct">0</span>
+                    <span class="block text-xs text-slate-400 mt-1">Correct Answers</span>
+                </div>
+                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800">
+                    <span class="text-2xl font-bold text-rose-400" id="res-wrong">0</span>
+                    <span class="block text-xs text-slate-400 mt-1">Incorrect Answers</span>
+                </div>
+            </div>
+
+            <div class="bg-sky-950/30 border border-sky-500/20 p-4 rounded-2xl mb-6">
+                <span class="text-xs text-slate-400 uppercase tracking-widest font-semibold">Total Accuracy Score</span>
+                <p class="text-3xl font-black text-sky-400 mt-1" id="res-score-percentage">0%</p>
+            </div>
+
+            <button onclick="closeResultModal()" class="w-full py-3 bg-gradient-to-r from-sky-600 to-teal-500 text-white font-bold rounded-xl text-sm shadow-lg hover:opacity-95">
+                Back to Dashboard
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 4: Leaderboard & Profile Drawer -->
+    <div id="leaderboard-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass-panel w-full max-w-2xl rounded-3xl p-6 sm:p-8 border border-slate-700 relative shadow-2xl">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-trophy text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">Student Leaderboard</h3>
+                        <p class="text-xs text-slate-400">Top medical candidates performance tracking</p>
+                    </div>
+                </div>
+                <button onclick="closeLeaderboard()" class="text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm text-slate-300">
+                    <thead class="bg-slate-900/80 text-xs text-slate-400 uppercase border-b border-slate-800">
+                        <tr>
+                            <th class="py-3 px-4">Rank</th>
+                            <th class="py-3 px-4">Student</th>
+                            <th class="py-3 px-4">Medical Institution</th>
+                            <th class="py-3 px-4 text-center">Quizzes</th>
+                            <th class="py-3 px-4 text-right">Avg Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-table-body" class="divide-y divide-slate-800/60">
+                        <!-- Rendered dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
     <script>
-        /* ================= 1. TAB SWITCHER ================= */
-        function switchTab(subject) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-            event.currentTarget.classList.add('active');
-            const target = document.getElementById(`tab-${subject}`);
-            target.classList.add('active');
-
-            // Initialize or reshuffle quiz for that subject
-            initQuiz(subject);
-        }
-
-        /* ================= 2. GUIDELINES MODAL DATA ================= */
-        const guidelines = {
+        // Data Structure for Subjects, Guidelines, Video Links, and MCQs
+        const SUBJECTS = {
             anatomy: {
-                title: "Anatomy Study Guideline & Exam Strategy",
-                items: [
-                    "<strong>Osteology Strategy:</strong> Focus on muscle attachments, nerve supplies passing through foramina, and joint types during bone viva.",
-                    "<strong>Gross Anatomy & Dissection:</strong> Always practice drawing clean, labeled cross-sectional diagrams with standard color codes (Red for Arteries, Blue for Veins, Yellow for Nerves).",
-                    "<strong>Histology & Embryology:</strong> Prepare identification points for slides under microscopic view and memorize germ layer derivatives."
+                title: 'Anatomy',
+                icon: 'fa-bone',
+                badgeBg: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
+                guidelines: [
+                    'Study osteology alongside real bones or high-resolution 3D atlas models.',
+                    'Focus on nerve supply, muscle insertions, and clinical correlates (e.g. wrist drop, foot drop).',
+                    'Practice drawing clear diagrams for histology and embryology sections for exams.'
+                ],
+                videos: [
+                    { title: 'Bone Osteology Series', channel: 'Dr. Viren Kariya', link: 'https://www.youtube.com/@drvirenkariya', tag: 'Bones & Joint Special' },
+                    { title: 'Gross & Regional Anatomy', channel: 'WE LIKE ANATOMY', link: 'https://www.youtube.com/@WELIKEANATOMY', tag: 'Complete Gross Anatomy' }
+                ],
+                mcqs: [
+                    { q: "Which bone is known as the collarbone?", options: ["Scapula", "Clavicle", "Sternum", "Humerus"], ans: 1 },
+                    { q: "Which nerve injury causes wrist drop?", options: ["Median Nerve", "Ulnar Nerve", "Radial Nerve", "Axillary Nerve"], ans: 2 },
+                    { q: "The lateral malleolus is a feature of which bone?", options: ["Tibia", "Fibula", "Femur", "Talus"], ans: 1 },
+                    { q: "Which muscle is the primary abductor of the arm up to 15 degrees?", options: ["Deltoid", "Supraspinatus", "Infraspinatus", "Subscapularis"], ans: 1 },
+                    { q: "How many thoracic vertebrae are present in the human spine?", options: ["7", "5", "12", "4"], ans: 2 },
+                    { q: "Which vessel passes through the Foramen Magnum?", options: ["Internal Carotid Artery", "Vertebral Artery", "Middle Meningeal Artery", "Subclavian Artery"], ans: 1 },
+                    { q: "The inguinal ligament is formed by the aponeurosis of which muscle?", options: ["External Oblique", "Internal Oblique", "Transversus Abdominis", "Rectus Abdominis"], ans: 0 },
+                    { q: "Which structure pierces the clavipectoral fascia?", options: ["Cephalic Vein", "Basilic Vein", "Brachial Artery", "Radial Nerve"], ans: 0 },
+                    { q: "What type of joint is the knee joint?", options: ["Ball and Socket", "Hinge / Modified Condyloid", "Pivot", "Saddle"], ans: 1 },
+                    { q: "Which cell secretes osteoid in bone remodeling?", options: ["Osteoclast", "Osteoblast", "Osteocyte", "Chondrocyte"], ans: 1 },
+                    { q: "The circle of Willis is located at which site?", options: ["Base of the brain", "Carotid sheath", "Popliteal fossa", "Cubital fossa"], ans: 0 },
+                    { q: "Which nerve innervates the diaphragm?", options: ["Vagus Nerve", "Phrenic Nerve", "Sciatic Nerve", "Intercostal Nerve"], ans: 1 }
                 ]
             },
             physiology: {
-                title: "Physiology Study Guideline & Exam Strategy",
-                items: [
-                    "<strong>Systemic Flowcharts:</strong> Draw action potential waveforms, cardiac cycles, and renal feedback loops for written questions.",
-                    "<strong>Clinical Correlations:</strong> Relate normal physiological ranges (e.g., ABG values, GFR, cardiac output) to clinical pathology.",
-                    "<strong>Practical/Viva Preparation:</strong> Practice taking BP, mapping reflexes, and explaining ECG lead placements confidently."
+                title: 'Physiology',
+                icon: 'fa-heart-pulse',
+                badgeBg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+                guidelines: [
+                    'Focus on understanding mechanism flowcharts rather than memorizing raw text.',
+                    'Master Cardiac Cycle graphs, Action Potentials, and Renal Countercurrent mechanisms.',
+                    'Connect physiological concepts directly to clinical cases (e.g. shock, heart failure, acidosis).'
+                ],
+                videos: [
+                    { title: 'Conceptual Physiology Tutorials', channel: 'Physiology er Golpo Kotha', link: 'https://www.youtube.com/@physiologyr_golpokotha', tag: 'Bilingual Physiology' }
+                ],
+                mcqs: [
+                    { q: "What is the normal pacemaker of the human heart?", options: ["AV Node", "SA Node", "Bundle of His", "Purkinje Fibers"], ans: 1 },
+                    { q: "Which hormone increases blood calcium levels?", options: ["Calcitonin", "Parathyroid Hormone (PTH)", "Insulin", "Aldosterone"], ans: 1 },
+                    { q: "What is the primary site of water reabsorption in nephrons?", options: ["Distal Convoluted Tubule", "Loop of Henle", "Proximal Convoluted Tubule", "Collecting Duct"], ans: 2 },
+                    { q: "Which cell type in the stomach secretes Hydrochloric Acid (HCl)?", options: ["Chief Cells", "Parietal Cells", "G Cells", "Mucous Neck Cells"], ans: 1 },
+                    { q: "What is the average resting cardiac output in adults?", options: ["3.5 L/min", "5.0 L/min", "7.2 L/min", "2.0 L/min"], ans: 1 },
+                    { q: "Which physiological surfactant reduces alveolar surface tension?", options: ["Dipalmitoylphosphatidylcholine", "Albumin", "Globulin", "Fibrinogen"], ans: 0 },
+                    { q: "What causes the S1 (first) heart sound?", options: ["Closure of Semilunar valves", "Closure of AV valves", "Rapid ventricular filling", "Atrial contraction"], ans: 1 },
+                    { q: "Which hormone stimulates red blood cell production (erythropoiesis)?", options: ["Erythropoietin", "Thyroxine", "Cortisol", "Growth Hormone"], ans: 0 },
+                    { q: "What is normal glomerular filtration rate (GFR) in a healthy adult?", options: ["60 mL/min", "125 mL/min", "180 mL/min", "200 mL/min"], ans: 1 },
+                    { q: "Which part of the brain regulates body temperature and autonomic functions?", options: ["Cerebellum", "Hypothalamus", "Thalamus", "Medulla Oblongata"], ans: 1 },
+                    { q: "What is the primary transport form of carbon dioxide in arterial blood?", options: ["Dissolved CO2", "Carbaminohemoglobin", "Bicarbonate ions (HCO3-)", "Carbonic acid"], ans: 2 },
+                    { q: "Which ion influx triggers neurotransmitter release at synaptic terminals?", options: ["Sodium (Na+)", "Potassium (K+)", "Calcium (Ca2+)", "Chloride (Cl-)"], ans: 2 }
                 ]
             },
             biochemistry: {
-                title: "Biochemistry Study Guideline & Exam Strategy",
-                items: [
-                    "<strong>Metabolic Pathways:</strong> Focus on rate-limiting enzymes, ATP yields, cellular locations, and key regulatory hormones (Insulin vs Glucagon).",
-                    "<strong>Inborn Errors of Metabolism:</strong> Group enzyme deficiencies with clinical signs (e.g., PKU, Alkaptonuria, Glycogen Storage Diseases).",
-                    "<strong>Lab Interpretations:</strong> Master Liver Function Tests (LFTs), Renal Function Tests (RFTs), and lipid profiles."
+                title: 'Biochemistry',
+                icon: 'fa-dna',
+                badgeBg: 'bg-sky-500/10 text-sky-400 border-sky-500/20',
+                guidelines: [
+                    'Draw metabolic pathways (Glycolysis, TCA Cycle, Urea Cycle) regularly to retain enzymes & cofactors.',
+                    'Understand regulatory rate-limiting enzymes and their hormonal modulation (Insulin vs Glucagon).',
+                    'Pay close attention to clinical enzyme markers (ALT, AST, Troponin, Amylase).'
+                ],
+                videos: [
+                    { title: 'Biochemistry Playlists & Topics', channel: 'Tajwar Hasnat Thuha', link: 'https://www.youtube.com/@tajwarhasnatthuha4937/playlists', tag: 'Playlist Collection' }
+                ],
+                mcqs: [
+                    { q: "What is the rate-limiting enzyme of Glycolysis?", options: ["Hexokinase", "Phosphofructokinase-1 (PFK-1)", "Pyruvate Kinase", "Aldolase"], ans: 1 },
+                    { q: "Which vitamin deficiency causes Scurvy?", options: ["Vitamin A", "Vitamin B12", "Vitamin C", "Vitamin D"], ans: 2 },
+                    { q: "Where does the TCA (Krebs) cycle take place inside the cell?", options: ["Cytosol", "Mitochondrial Matrix", "Nucleus", "Endoplasmic Reticulum"], ans: 1 },
+                    { q: "Which lipoprotein transports dietary lipids from the intestine to tissues?", options: ["VLDL", "LDL", "HDL", "Chylomicrons"], ans: 3 },
+                    { q: "How many net ATP molecules are yielded per glucose molecule in aerobic glycolysis?", options: ["2 ATP", "7 or 8 ATP", "32 ATP", "38 ATP"], ans: 0 },
+                    { q: "Which amino acid is precursor to serotonin?", options: ["Tyrosine", "Tryptophan", "Phenylalanine", "Histidine"], ans: 1 },
+                    { q: "Which enzyme is deficient in Phenylketonuria (PKU)?", options: ["Tyrosinase", "Phenylalanine Hydroxylase", "Homogentisate Oxidase", "MAPK"], ans: 1 },
+                    { q: "What type of bond stabilizes alpha-helices in protein secondary structure?", options: ["Disulfide bonds", "Hydrogen bonds", "Ionic bonds", "Peptide bonds"], ans: 1 },
+                    { q: "Which organ is the primary site of the Urea Cycle?", options: ["Kidney", "Liver", "Spleen", "Pancreas"], ans: 1 },
+                    { q: "Which vitamin is crucial as a cofactor for transamination reactions?", options: ["Pyridoxal Phosphate (B6)", "Thiamine (B1)", "Niacin (B3)", "Biotin (B7)"], ans: 0 },
+                    { q: "Which enzyme unzips double-stranded DNA during replication?", options: ["DNA Polymerase", "DNA Helicase", "DNA Ligase", "Topoisomerase"], ans: 1 },
+                    { q: "Which enzyme regulates cholesterol synthesis as its rate-limiting step?", options: ["HMG-CoA Reductase", "LPL", "ACAT", "LCAT"], ans: 0 }
                 ]
             }
         };
 
-        function openGuideline(subject) {
-            const data = guidelines[subject];
-            document.getElementById('modal-title').innerText = data.title;
-            const container = document.getElementById('modal-body');
-            container.innerHTML = data.items.map(item => `
-                <div class="guideline-item">
-                    <p style="line-height: 1.6; font-size: 0.95rem; color: #e2e8f0;">${item}</p>
-                </div>
-            `).join('');
-            document.getElementById('guideline-modal').classList.add('active');
-        }
+        // Current Active State Variables
+        let currentSubject = 'anatomy';
+        let currentUser = null;
+        let activeQuizQuestions = [];
+        let currentQuizIndex = 0;
+        let selectedAnswers = [];
 
-        function closeGuideline() {
-            document.getElementById('guideline-modal').classList.remove('active');
-        }
+        // Mock Global Leaderboard Data
+        let globalLeaderboard = [
+            { name: "Dr. Ayman Rahman", college: "Dhaka Medical College", exams: 14, score: 96 },
+            { name: "Nusrat Jahan", college: "Chittagong Medical College", exams: 12, score: 92 },
+            { name: "Samiul Islam", college: "SSMC, Dhaka", exams: 9, score: 88 }
+        ];
 
-        /* ================= 3. MCQ QUESTION BANK ================= */
-        const questionBank = {
-            anatomy: [
-                { q: "Which bone is known as the collarbone?", options: ["Clavicle", "Scapula", "Sternum", "Humerus"], answer: 0 },
-                { q: "Which nerve innervates the anterior compartment of the arm?", options: ["Median nerve", "Musculocutaneous nerve", "Radial nerve", "Ulnar nerve"], answer: 1 },
-                { q: "What is the longest bone in the human body?", options: ["Tibia", "Fibula", "Femur", "Radius"], answer: 2 },
-                { q: "Which artery supplies the primary motor cortex?", options: ["Middle Cerebral Artery", "Anterior Cerebral Artery", "Posterior Cerebral Artery", "Basilar Artery"], answer: 1 },
-                { q: "How many cranial nerves originate directly from the brainstem?", options: ["10", "12", "8", "6"], answer: 0 },
-                { q: "Which muscle is the primary muscle of respiration?", options: ["Intercostal muscle", "Diaphragm", "Scalene muscle", "Rectus abdominis"], answer: 1 },
-                { q: "What type of joint is the hip joint?", options: ["Hinge joint", "Pivot joint", "Ball and socket joint", "Saddle joint"], answer: 2 },
-                { q: "The anatomical term 'distal' means:", options: ["Closer to the trunk", "Farther from the trunk", "Towards the front", "Towards the back"], answer: 1 },
-                { q: "Which spinal level corresponds to the lumbar puncture site in adults?", options: ["L1-L2", "L3-L4", "T12-L1", "L5-S1"], answer: 1 },
-                { q: "The portal triad consists of the proper hepatic artery, hepatic portal vein, and:", options: ["Bile duct", "Pancreatic duct", "Cystic duct", "Hepatic vein"], answer: 0 },
-                { q: "Which nerve injury causes wrist drop?", options: ["Ulnar nerve", "Radial nerve", "Median nerve", "Axillary nerve"], answer: 1 },
-                { q: "The mitral valve lies between which chambers?", options: ["Right atrium & Right ventricle", "Left atrium & Left ventricle", "Left ventricle & Aorta", "Right ventricle & Pulmonary artery"], answer: 1 }
-            ],
-            physiology: [
-                { q: "What is the normal resting membrane potential of a typical neuron?", options: ["-90 mV", "-70 mV", "-55 mV", "+30 mV"], answer: 1 },
-                { q: "Which hormone is responsible for water reabsorption in the renal collecting ducts?", options: ["Aldosterone", "Vasopressin (ADH)", "Renin", "ANP"], answer: 1 },
-                { q: "What triggers the release of neurotransmitters at the presynaptic terminal?", options: ["Influx of Na+", "Influx of Ca2+", "Efflux of K+", "Influx of Cl-"], answer: 1 },
-                { q: "Which cell type secretes hydrochloric acid in the stomach?", options: ["Chief cells", "Parietal cells", "G cells", "Mucous neck cells"], answer: 1 },
-                { q: "The pacemaker of the human heart is normally the:", options: ["AV node", "SA node", "Bundle of His", "Purkinje fibers"], answer: 1 },
-                { q: "Surfactant reduces surface tension in alveoli and is secreted by:", options: ["Type I pneumocytes", "Type II pneumocytes", "Alveolar macrophages", "Clara cells"], answer: 1 },
-                { q: "Which parameter is primarily measured by Erythropoietin (EPO) stimulation?", options: ["Platelet count", "RBC mass", "WBC count", "Plasma volume"], answer: 1 },
-                { q: "What is the normal glomerular filtration rate (GFR) in a healthy adult male?", options: ["125 mL/min", "90 mL/min", "150 mL/min", "60 mL/min"], answer: 0 },
-                { q: "Which phase of the cardiac cycle coincides with the QRS complex on an ECG?", options: ["Atrial depolarization", "Ventricular depolarization", "Ventricular repolarization", "Atrial repolarization"], answer: 1 },
-                { q: "Growth hormone is secreted by which part of the pituitary gland?", options: ["Anterior Pituitary", "Posterior Pituitary", "Pars intermedia", "Hypothalamus"], answer: 0 },
-                { q: "Oxygen transport in red blood cells occurs via binding to:", options: ["Myoglobin", "Hemoglobin", "Albumin", "Transferrin"], answer: 1 },
-                { q: "The primary chemical drive for breathing under normal physiological conditions is:", options: ["Arterial O2 tension", "Arterial CO2 tension (PaCO2)", "Blood pH", "Arterial nitrogen"], answer: 1 }
-            ],
-            biochemistry: [
-                { q: "Which pathway produces the maximum number of ATP molecules per glucose molecule?", options: ["Glycolysis", "Citric Acid Cycle & Oxidative Phosphorylation", "Pentose Phosphate Pathway", "Gluconeogenesis"], answer: 1 },
-                { q: "What is the key rate-limiting enzyme of Glycolysis?", options: ["Hexokinase", "Phosphofructokinase-1 (PFK-1)", "Pyruvate Kinase", "Glucose-6-Phosphatase"], answer: 1 },
-                { q: "A deficiency of Vitamin C causes which clinical condition?", options: ["Rickets", "Scurvy", "Beri-beri", "Pellagra"], answer: 1 },
-                { q: "Which amino acid is the precursor for Serotonin synthesis?", options: ["Tyrosine", "Tryptophan", "Phenylalanine", "Histidine"], answer: 1 },
-                { q: "Which vitamin serves as a coenzyme for transamination reactions?", options: ["Vitamin B1 (Thiamine)", "Vitamin B6 (Pyridoxal Phosphate)", "Vitamin B12", "Folic Acid"], answer: 1 },
-                { q: "What type of bond stabilizes the secondary structure of proteins?", options: ["Peptide bond", "Hydrogen bond", "Disulfide bond", "Ionic bond"], answer: 1 },
-                { q: "Urea cycle takes place primarily in which organ?", options: ["Kidneys", "Liver", "Spleen", "Pancreas"], answer: 1 },
-                { q: "Which lipoprotein transports dietary lipids from the intestine to peripheral tissues?", options: ["VLDL", "Chylomicrons", "LDL", "HDL"], answer: 1 },
-                { q: "Alkaptonuria is caused by the deficiency of which enzyme?", options: ["Homogentisate oxidase", "Phenylalanine hydroxylase", "Tyrosinase", "Branched-chain alpha-keto acid dehydrogenase"], answer: 0 },
-                { q: "Which nucleic acid base is present in RNA but absent in DNA?", options: ["Thymine", "Uracil", "Cytosine", "Guanine"], answer: 1 },
-                { q: "The main storage form of glucose in human muscle and liver is:", options: ["Starch", "Glycogen", "Amylose", "Dextran"], answer: 1 },
-                { q: "Which enzyme is deficient in von Gierke disease?", options: ["Glucose-6-phosphatase", "Glycogen phosphorylase", "Alpha-1,4-glucosidase", "Debranching enzyme"], answer: 0 }
-            ]
-        };
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            loadUserData();
+            incrementVisitCount();
+            switchSubject('anatomy');
+        });
 
-        /* ================= 4. QUIZ STATE & LOGIC ENGINE ================= */
-        const activeQuizState = {
-            anatomy: { current: 0, score: 0, questions: [], userAnswers: [] },
-            physiology: { current: 0, score: 0, questions: [], userAnswers: [] },
-            biochemistry: { current: 0, score: 0, questions: [], userAnswers: [] }
-        };
-
-        // Utility to shuffle arrays (Fisher-Yates Shuffle)
-        function shuffle(array) {
-            let currentIndex = array.length, randomIndex;
-            const cloned = [...array];
-            while (currentIndex !== 0) {
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex--;
-                [cloned[currentIndex], cloned[randomIndex]] = [cloned[randomIndex], cloned[currentIndex]];
+        // User Data Management
+        function loadUserData() {
+            const saved = localStorage.getItem('medpulse_user');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                updateUIForUser();
             }
-            return cloned;
         }
 
-        function initQuiz(subject) {
-            const state = activeQuizState[subject];
-            state.current = 0;
-            state.score = 0;
-            state.userAnswers = [];
-            // Select 10 random questions from the pool
-            state.questions = shuffle(questionBank[subject]).slice(0, 10);
-            renderQuestion(subject);
+        function saveUserData() {
+            if (currentUser) {
+                localStorage.setItem('medpulse_user', JSON.stringify(currentUser));
+                updateUIForUser();
+            }
         }
 
-        function renderQuestion(subject) {
-            const state = activeQuizState[subject];
-            const container = document.getElementById(`${subject}-quiz-body`);
-            const progress = document.getElementById(`${subject}-progress`);
+        function incrementVisitCount() {
+            if (currentUser) {
+                currentUser.visits = (currentUser.visits || 0) + 1;
+                saveUserData();
+            } else {
+                let anonVisits = parseInt(localStorage.getItem('medpulse_anon_visits') || '0') + 1;
+                localStorage.setItem('medpulse_anon_visits', anonVisits.toString());
+                document.getElementById('stat-visits').innerText = anonVisits;
+            }
+        }
 
-            if (state.current >= state.questions.length) {
-                renderResults(subject);
+        function updateUIForUser() {
+            if (!currentUser) return;
+            document.getElementById('welcome-title').innerText = `Welcome back, ${currentUser.name}!`;
+            document.getElementById('stat-visits').innerText = currentUser.visits || 1;
+            document.getElementById('stat-exams').innerText = currentUser.examsCount || 0;
+            
+            let avg = currentUser.examsCount > 0 ? Math.round(currentUser.totalScore / currentUser.examsCount) : 0;
+            document.getElementById('stat-score').innerText = `${avg}%`;
+
+            // Change login button to profile indicator
+            document.getElementById('login-trigger-btn').innerHTML = `
+                <i class="fa-solid fa-user-check text-emerald-400"></i> ${currentUser.name.split(' ')[0]}
+            `;
+            document.getElementById('login-trigger-btn').classList.replace('bg-sky-600', 'bg-slate-800');
+        }
+
+        // Subject Tab Switcher
+        function switchSubject(subjectKey) {
+            currentSubject = subjectKey;
+            const data = SUBJECTS[subjectKey];
+
+            // Update UI Tab States (Desktop & Mobile)
+            ['anatomy', 'physiology', 'biochemistry'].forEach(key => {
+                const desktopTab = document.getElementById(`tab-${key}`);
+                const mobTab = document.getElementById(`mob-tab-${key}`);
+
+                if (key === subjectKey) {
+                    desktopTab?.classList.add('active-tab');
+                    desktopTab?.classList.remove('text-slate-400');
+                    mobTab?.classList.add('active-tab');
+                    mobTab?.classList.remove('text-slate-400');
+                } else {
+                    desktopTab?.classList.remove('active-tab');
+                    desktopTab?.classList.add('text-slate-400');
+                    mobTab?.classList.remove('active-tab');
+                    mobTab?.classList.add('text-slate-400');
+                }
+            });
+
+            // Render Selected Subject Content
+            const contentArea = document.getElementById('subject-content-area');
+            contentArea.innerHTML = `
+                <!-- Subject Guidelines Card -->
+                <div class="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl ${data.badgeBg} flex items-center justify-center text-lg">
+                                <i class="fa-solid ${data.icon}"></i>
+                            </div>
+                            <div>
+                                <h2 class="text-xl font-bold text-white">${data.title} High-Yield Guidelines</h2>
+                                <p class="text-xs text-slate-400">Click below to see recommended study approaches</p>
+                            </div>
+                        </div>
+                        <span class="text-xs px-3 py-1 rounded-full bg-slate-800 text-sky-400 border border-sky-500/20 w-fit">
+                            <i class="fa-solid fa-lightbulb text-amber-400 mr-1"></i> Exam Strategy
+                        </span>
+                    </div>
+
+                    <ul class="space-y-3 text-sm text-slate-300">
+                        ${data.guidelines.map(g => `
+                            <li class="flex items-start gap-3 bg-slate-900/50 p-3.5 rounded-xl border border-slate-800/80">
+                                <i class="fa-solid fa-circle-check text-sky-400 mt-1"></i>
+                                <span>${g}</span>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+
+                <!-- Video Lectures Section -->
+                <div>
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-brands fa-youtube text-red-500 text-xl"></i> Recommended YouTube Video Resources
+                        </h3>
+                        <p class="text-xs text-slate-400">Click below to see video in this particular subject</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${data.videos.map(v => `
+                            <div class="glass-card p-5 rounded-2xl flex flex-col justify-between">
+                                <div>
+                                    <span class="text-[10px] uppercase tracking-wider font-semibold text-teal-400 bg-teal-500/10 px-2.5 py-0.5 rounded-md border border-teal-500/20">
+                                        ${v.tag}
+                                    </span>
+                                    <h4 class="text-base font-bold text-white mt-2">${v.title}</h4>
+                                    <p class="text-xs text-slate-400 mt-1">Instructor / Channel: <span class="text-slate-200">${v.channel}</span></p>
+                                </div>
+                                <a href="${v.link}" target="_blank" rel="noopener noreferrer" 
+                                   class="mt-4 inline-flex items-center justify-center gap-2 w-full py-2.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-red-300 border border-red-500/30 font-semibold rounded-xl text-xs transition-all">
+                                    <i class="fa-solid fa-play text-xs"></i> Open Channel in YouTube
+                                </a>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- Interactive Quiz Banner Section -->
+                <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-slate-800 bg-gradient-to-r from-sky-950/40 to-slate-900/80 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <div class="space-y-2 text-center sm:text-left">
+                        <span class="text-xs font-bold uppercase tracking-widest text-amber-400 bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                            Shuffled MCQ Test
+                        </span>
+                        <h3 class="text-2xl font-extrabold text-white">Test Your ${data.title} Knowledge</h3>
+                        <p class="text-xs sm:text-sm text-slate-400">
+                            10 randomized MCQs with instant scoring & accuracy stats.
+                        </p>
+                    </div>
+                    <button onclick="startQuiz('${subjectKey}')" class="px-8 py-3.5 bg-gradient-to-r from-sky-500 to-teal-400 hover:opacity-90 text-white font-extrabold rounded-2xl shadow-xl shadow-sky-500/20 text-sm whitespace-nowrap transition-all">
+                        <i class="fa-solid fa-bolt mr-2"></i> Start 10-Question Quiz
+                    </button>
+                </div>
+            `;
+        }
+
+        // Authentication Modal Handlers
+        function openAuthModal() {
+            document.getElementById('auth-modal').classList.remove('hidden');
+            document.getElementById('auth-modal').classList.add('flex');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+            document.getElementById('auth-modal').classList.remove('flex');
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('input-name').value.trim();
+            const college = document.getElementById('input-college').value.trim();
+            const mobile = document.getElementById('input-mobile').value.trim();
+
+            currentUser = {
+                name,
+                college,
+                mobile,
+                visits: parseInt(localStorage.getItem('medpulse_anon_visits') || '1'),
+                examsCount: 0,
+                totalScore: 0
+            };
+
+            saveUserData();
+            closeAuthModal();
+            alert(`Welcome ${name}! Your portal account is now active.`);
+        }
+
+        // Interactive Quiz Logic (Shuffling & Execution)
+        function startQuiz(subjectKey) {
+            const subject = SUBJECTS[subjectKey];
+            if (!subject || !subject.mcqs || subject.mcqs.length === 0) return;
+
+            // Shuffle full pool and take 10 questions
+            const shuffled = [...subject.mcqs].sort(() => 0.5 - Math.random());
+            activeQuizQuestions = shuffled.slice(0, 10);
+            currentQuizIndex = 0;
+            selectedAnswers = new Array(activeQuizQuestions.length).fill(null);
+
+            document.getElementById('quiz-subject-badge').innerText = subject.title;
+            renderQuizQuestion();
+
+            document.getElementById('quiz-modal').classList.remove('hidden');
+            document.getElementById('quiz-modal').classList.add('flex');
+        }
+
+        function closeQuizModal() {
+            document.getElementById('quiz-modal').classList.add('hidden');
+            document.getElementById('quiz-modal').classList.remove('flex');
+        }
+
+        function renderQuizQuestion() {
+            const q = activeQuizQuestions[currentQuizIndex];
+            const body = document.getElementById('quiz-body');
+
+            document.getElementById('quiz-progress-text').innerText = `Question ${currentQuizIndex + 1} of ${activeQuizQuestions.length}`;
+
+            body.innerHTML = `
+                <div class="space-y-4">
+                    <h4 class="text-lg font-bold text-white leading-snug">
+                        <span class="text-sky-400">Q${currentQuizIndex + 1}.</span> ${q.q}
+                    </h4>
+                    <div class="space-y-2.5 mt-4">
+                        ${q.options.map((opt, idx) => `
+                            <button onclick="selectOption(${idx})" class="quiz-opt-btn w-full text-left p-4 rounded-xl border text-sm font-medium transition-all flex items-center justify-between ${
+                                selectedAnswers[currentQuizIndex] === idx 
+                                ? 'bg-sky-600/30 border-sky-400 text-white' 
+                                : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:bg-slate-800/60'
+                            }">
+                                <span><strong class="text-sky-400 mr-2">${String.fromCharCode(65 + idx)}.</strong> ${opt}</span>
+                                ${selectedAnswers[currentQuizIndex] === idx ? '<i class="fa-solid fa-circle-check text-sky-400"></i>' : ''}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            const nextBtn = document.getElementById('quiz-next-btn');
+            if (currentQuizIndex === activeQuizQuestions.length - 1) {
+                nextBtn.innerHTML = `Submit Assessment <i class="fa-solid fa-check-double ml-1"></i>`;
+                nextBtn.classList.replace('bg-sky-600', 'bg-emerald-600');
+            } else {
+                nextBtn.innerHTML = `Next Question <i class="fa-solid fa-arrow-right ml-1"></i>`;
+                nextBtn.classList.replace('bg-emerald-600', 'bg-sky-600');
+            }
+        }
+
+        function selectOption(index) {
+            selectedAnswers[currentQuizIndex] = index;
+            renderQuizQuestion();
+        }
+
+        function nextQuestion() {
+            if (selectedAnswers[currentQuizIndex] === null) {
+                alert("Please select an answer before proceeding!");
                 return;
             }
 
-            const q = state.questions[state.current];
-            progress.innerText = `Question ${state.current + 1} of ${state.questions.length}`;
-
-            const prefixes = ['A', 'B', 'C', 'D'];
-
-            container.innerHTML = `
-                <div class="question-text">${state.current + 1}. ${q.q}</div>
-                <div class="options-grid">
-                    ${q.options.map((opt, idx) => `
-                        <button class="option-btn" onclick="selectOption('${subject}', ${idx})">
-                            <span class="option-prefix">${prefixes[idx]}</span>
-                            <span>${opt}</span>
-                        </button>
-                    `).join('')}
-                </div>
-                <div class="quiz-controls">
-                    <span style="color: var(--text-muted); font-size: 0.85rem;">Select an option to lock answer</span>
-                    <button id="${subject}-next-btn" class="btn-action" style="display:none;" onclick="nextQuestion('${subject}')">
-                        Next Question <i class="fa-solid fa-chevron-right" style="margin-left: 6px;"></i>
-                    </button>
-                </div>
-            `;
+            if (currentQuizIndex < activeQuizQuestions.length - 1) {
+                currentQuizIndex++;
+                renderQuizQuestion();
+            } else {
+                // Evaluate Results
+                finishQuiz();
+            }
         }
 
-        function selectOption(subject, selectedIdx) {
-            const state = activeQuizState[subject];
-            const q = state.questions[state.current];
-            const container = document.getElementById(`${subject}-quiz-body`);
-            const buttons = container.querySelectorAll('.option-btn');
-
-            buttons.forEach(btn => btn.disabled = true);
-
-            const isCorrect = selectedIdx === q.answer;
-            if (isCorrect) state.score++;
-
-            state.userAnswers.push({
-                question: q.q,
-                selected: selectedIdx,
-                correct: q.answer,
-                isCorrect: isCorrect
+        function finishQuiz() {
+            let correctCount = 0;
+            activeQuizQuestions.forEach((q, i) => {
+                if (selectedAnswers[i] === q.ans) {
+                    correctCount++;
+                }
             });
 
-            buttons[selectedIdx].classList.add(isCorrect ? 'correct' : 'incorrect');
-            if (!isCorrect) {
-                buttons[q.answer].classList.add('correct');
+            let wrongCount = activeQuizQuestions.length - correctCount;
+            let percentage = Math.round((correctCount / activeQuizQuestions.length) * 100);
+
+            // Update user stats
+            if (currentUser) {
+                currentUser.examsCount = (currentUser.examsCount || 0) + 1;
+                currentUser.totalScore = (currentUser.totalScore || 0) + percentage;
+                saveUserData();
             }
 
-            document.getElementById(`${subject}-next-btn`).style.display = 'inline-block';
+            closeQuizModal();
+
+            // Display Results Modal
+            document.getElementById('res-correct').innerText = correctCount;
+            document.getElementById('res-wrong').innerText = wrongCount;
+            document.getElementById('res-score-percentage').innerText = `${percentage}%`;
+            document.getElementById('result-subject-title').innerText = `${SUBJECTS[currentSubject].title} Shuffled Quiz Result`;
+
+            document.getElementById('result-modal').classList.remove('hidden');
+            document.getElementById('result-modal').classList.add('flex');
         }
 
-        function nextQuestion(subject) {
-            const state = activeQuizState[subject];
-            state.current++;
-            renderQuestion(subject);
+        function closeResultModal() {
+            document.getElementById('result-modal').classList.add('hidden');
+            document.getElementById('result-modal').classList.remove('flex');
         }
 
-        function renderResults(subject) {
-            const state = activeQuizState[subject];
-            const container = document.getElementById(`${subject}-quiz-body`);
-            const progress = document.getElementById(`${subject}-progress`);
+        // Leaderboard Drawer & Modal Logic
+        function openLeaderboard() {
+            const tableBody = document.getElementById('leaderboard-table-body');
             
-            progress.innerText = "Completed";
+            // Build current dataset combining global mock data + active user
+            let list = [...globalLeaderboard];
+            if (currentUser && currentUser.examsCount > 0) {
+                let userAvg = Math.round(currentUser.totalScore / currentUser.examsCount);
+                list.push({
+                    name: `${currentUser.name} (You)`,
+                    college: currentUser.college,
+                    exams: currentUser.examsCount,
+                    score: userAvg
+                });
+            }
 
-            const correctCount = state.score;
-            const incorrectCount = state.questions.length - state.score;
-            const percentage = Math.round((correctCount / state.questions.length) * 100);
+            // Sort by score descending
+            list.sort((a, b) => b.score - a.score);
 
-            container.innerHTML = `
-                <div class="results-card">
-                    <h3 style="font-size: 1.4rem;">Performance Summary</h3>
-                    <div class="score-gauge">${percentage}%</div>
-                    <p style="color: var(--text-muted);">You scored ${correctCount} out of ${state.questions.length} questions correctly.</p>
-                    
-                    <div class="results-summary">
-                        <div class="stat-box">
-                            <div class="stat-val correct">${correctCount}</div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);">Correct</div>
-                        </div>
-                        <div class="stat-box">
-                            <div class="stat-val incorrect">${incorrectCount}</div>
-                            <div style="font-size: 0.85rem; color: var(--text-muted);">Incorrect</div>
-                        </div>
-                    </div>
+            tableBody.innerHTML = list.map((item, index) => `
+                <tr class="${item.name.includes('(You)') ? 'bg-sky-950/40 border-l-4 border-sky-400' : 'hover:bg-slate-900/40'}">
+                    <td class="py-3 px-4 font-bold ${index === 0 ? 'text-amber-400' : index === 1 ? 'text-slate-300' : index === 2 ? 'text-amber-600' : 'text-slate-500'}">
+                        #${index + 1}
+                    </td>
+                    <td class="py-3 px-4 font-semibold text-white">${item.name}</td>
+                    <td class="py-3 px-4 text-xs text-slate-400">${item.college}</td>
+                    <td class="py-3 px-4 text-center font-medium">${item.exams}</td>
+                    <td class="py-3 px-4 text-right font-bold text-emerald-400">${item.score}%</td>
+                </tr>
+            `).join('');
 
-                    <button class="btn-action" onclick="initQuiz('${subject}')">
-                        <i class="fa-solid fa-rotate-right" style="margin-right: 8px;"></i> Retake Quiz
-                    </button>
-                </div>
-            `;
+            document.getElementById('leaderboard-modal').classList.remove('hidden');
+            document.getElementById('leaderboard-modal').classList.add('flex');
         }
 
-        // Initialize default subject on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            initQuiz('anatomy');
-        });
+        function closeLeaderboard() {
+            document.getElementById('leaderboard-modal').classList.add('hidden');
+            document.getElementById('leaderboard-modal').classList.remove('flex');
+        }
     </script>
 </body>
 </html>
