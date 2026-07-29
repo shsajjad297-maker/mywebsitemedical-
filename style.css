@@ -1,13 +1,13 @@
-/* =====================================
-   SAJJAD'S MEDICAL PORTFOLIO
-   PROFESSIONAL HOSPITAL STYLE CSS
+/* =====================================================
+   SAJJAD'S MEDICAL PORTAL
+   PROFESSIONAL MEDICAL EDUCATION THEME CSS
    PART 1
-===================================== */
+===================================================== */
 
 
-/* ===============================
+/* =========================
         RESET
-================================ */
+========================= */
 
 
 *{
@@ -28,6 +28,7 @@ html{
 
 
 
+
 body{
 
     font-family:
@@ -41,27 +42,81 @@ body{
 
     linear-gradient(
         135deg,
-        #061a2b,
-        #0b3554,
-        #0e4665
+        #041c2c,
+        #073b4c,
+        #0a5163
     );
 
 
-    color:#edf7fa;
+    color:#eefaff;
 
 
     overflow-x:hidden;
+
+    min-height:100vh;
 
 }
 
 
 
-/* ===============================
-     MEDICAL BACKGROUND EFFECT
-================================ */
+
+
+
+
+/* =========================
+   ANIMATED MEDICAL BACKGROUND
+========================= */
 
 
 body::before{
+
+
+    content:"";
+
+
+    position:fixed;
+
+
+    width:550px;
+
+
+    height:550px;
+
+
+    top:-180px;
+
+
+    left:-150px;
+
+
+    background:
+
+    radial-gradient(
+        circle,
+        rgba(0,220,255,.18),
+        transparent 70%
+    );
+
+
+    filter:blur(40px);
+
+
+    animation:
+
+    floatGlow 10s infinite alternate;
+
+
+    z-index:-1;
+
+
+}
+
+
+
+
+
+
+body::after{
 
 
     content:"";
@@ -76,61 +131,30 @@ body::before{
     height:500px;
 
 
-    top:-200px;
+    right:-150px;
 
 
-    left:-200px;
-
-
-    background:
-
-    rgba(0,180,220,0.10);
-
-
-    border-radius:50%;
-
-
-    filter:blur(120px);
-
-
-    z-index:-1;
-
-
-}
-
-
-
-
-body::after{
-
-
-    content:"";
-
-
-    position:fixed;
-
-
-    width:450px;
-
-
-    height:450px;
-
-
-    right:-200px;
-
-
-    bottom:-200px;
+    bottom:-150px;
 
 
     background:
 
-    rgba(0,220,180,0.08);
+
+    radial-gradient(
+        circle,
+        rgba(0,255,180,.12),
+        transparent 70%
+    );
 
 
-    border-radius:50%;
+    filter:blur(50px);
 
 
-    filter:blur(120px);
+
+    animation:
+
+    floatGlow 12s infinite alternate-reverse;
+
 
 
     z-index:-1;
@@ -143,9 +167,35 @@ body::after{
 
 
 
-/* ===============================
-             HEADER
-================================ */
+@keyframes floatGlow{
+
+
+    from{
+
+        transform:translateY(0px);
+
+    }
+
+
+    to{
+
+        transform:translateY(60px);
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+/* =========================
+          HEADER
+========================= */
 
 
 header{
@@ -163,11 +213,9 @@ header{
     width:100%;
 
 
-
     padding:
 
     18px 60px;
-
 
 
     display:flex;
@@ -182,21 +230,23 @@ header{
 
     background:
 
-    rgba(3,18,32,0.90);
+
+    rgba(2,20,35,.82);
 
 
 
-    backdrop-filter:blur(18px);
+    backdrop-filter:blur(20px);
 
 
 
     border-bottom:
 
-    1px solid rgba(255,255,255,0.08);
+    1px solid rgba(255,255,255,.12);
 
 
 
     z-index:1000;
+
 
 
 }
@@ -206,9 +256,11 @@ header{
 
 
 
-/* ===============================
-             LOGO
-================================ */
+
+
+/* =========================
+          LOGO
+========================= */
 
 
 .logo{
@@ -217,14 +269,19 @@ header{
     font-size:28px;
 
 
-    font-weight:700;
+    font-weight:750;
+
+
+    color:white;
+
 
 
     letter-spacing:.5px;
 
 
-    color:white;
+    animation:
 
+    fadeDown .8s ease;
 
 
 }
@@ -235,7 +292,36 @@ header{
 .logo::first-letter{
 
 
-    color:#35d5ff;
+    color:#38d9ff;
+
+
+}
+
+
+
+
+
+
+@keyframes fadeDown{
+
+
+from{
+
+    opacity:0;
+
+    transform:translateY(-20px);
+
+}
+
+
+to{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
 
 }
 
@@ -246,9 +332,10 @@ header{
 
 
 
-/* ===============================
+
+/* =========================
           NAVIGATION
-================================ */
+========================= */
 
 
 nav ul{
@@ -257,20 +344,24 @@ nav ul{
     display:flex;
 
 
-    gap:12px;
-
-
     list-style:none;
+
+
+    gap:12px;
 
 
 }
 
 
 
+
 nav ul li a{
 
 
-    display:block;
+    text-decoration:none;
+
+
+    color:#d8f3fa;
 
 
     padding:
@@ -278,30 +369,63 @@ nav ul li a{
     10px 18px;
 
 
-
-    color:#d9f3fa;
-
-
-
-    text-decoration:none;
-
-
-
-    font-size:16px;
-
+    border-radius:12px;
 
 
     font-weight:600;
 
 
+    transition:.35s;
 
-    border-radius:8px;
 
+    position:relative;
+
+
+}
+
+
+
+
+
+nav ul li a::after{
+
+
+    content:"";
+
+
+    position:absolute;
+
+
+    left:50%;
+
+
+    bottom:5px;
+
+
+    width:0;
+
+
+    height:2px;
+
+
+    background:#32d9ff;
 
 
     transition:.3s;
 
 
+    transform:translateX(-50%);
+
+
+}
+
+
+
+nav ul li a:hover::after{
+
+
+    width:60%;
+
 
 }
 
@@ -309,23 +433,15 @@ nav ul li a{
 
 
 
-nav ul li a:hover,
-nav a.active{
-
-
-    background:
-
-    rgba(0,190,255,0.15);
-
+nav ul li a:hover{
 
 
     color:white;
 
 
+    background:
 
-    box-shadow:
-
-    0 0 12px rgba(0,200,255,.25);
+    rgba(0,210,255,.12);
 
 
 
@@ -336,9 +452,12 @@ nav a.active{
 
 
 
-/* ===============================
-              HERO
-================================ */
+
+
+
+/* =========================
+          HERO
+========================= */
 
 
 #home{
@@ -352,24 +471,24 @@ nav a.active{
 
 
 
+
 .hero{
 
 
     width:85%;
 
 
-    max-width:950px;
+    max-width:1000px;
 
 
     margin:
 
-    40px auto;
-
+    50px auto;
 
 
     padding:
 
-    65px 45px;
+    70px 45px;
 
 
 
@@ -379,28 +498,61 @@ nav a.active{
 
     background:
 
-    rgba(255,255,255,0.07);
+
+    rgba(255,255,255,.08);
 
 
 
-    backdrop-filter:blur(18px);
+    backdrop-filter:blur(20px);
 
 
 
-    border-radius:24px;
+    border-radius:30px;
 
 
 
     border:
 
-    1px solid rgba(255,255,255,.12);
+    1px solid rgba(255,255,255,.15);
 
 
 
     box-shadow:
 
-    0 25px 60px rgba(0,0,0,.35);
+    0 30px 80px rgba(0,0,0,.35);
 
+
+
+    animation:
+
+    heroAppear 1s ease;
+
+
+}
+
+
+
+
+
+@keyframes heroAppear{
+
+
+from{
+
+opacity:0;
+
+transform:translateY(40px);
+
+}
+
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
 
 
 }
@@ -415,37 +567,30 @@ nav a.active{
     font-size:52px;
 
 
-    font-weight:700;
+    color:white;
 
 
     margin-bottom:25px;
-
-
-
-    color:white;
-
 
 
 }
 
 
 
+
 .hero p{
 
 
-    font-size:21px;
+    font-size:20px;
 
 
     line-height:1.8;
 
 
-
-    color:#d7edf5;
-
+    color:#d8edf5;
 
 
     margin-bottom:15px;
-
 
 
 }
@@ -457,7 +602,7 @@ nav a.active{
 .hero i{
 
 
-    color:#9edbea;
+    color:#7ee8ff;
 
 
 }
@@ -469,9 +614,10 @@ nav a.active{
 
 
 
-/* ===============================
-          SECTION STYLE
-================================ */
+
+/* =========================
+        SECTION
+========================= */
 
 
 section{
@@ -487,26 +633,23 @@ section{
 
 
 
+
 section h2{
 
 
     text-align:center;
 
 
-    font-size:40px;
-
+    font-size:42px;
 
 
     margin-bottom:30px;
 
 
-
-    color:#67dfff;
-
+    color:#63ddff;
 
 
-    font-weight:700;
-
+    letter-spacing:.5px;
 
 
 }
@@ -514,42 +657,57 @@ section h2{
 
 
 
-section p{
+
+section>p{
 
 
     text-align:center;
 
 
-    font-size:19px;
+    color:#d6edf3;
 
 
-    line-height:1.7;
+    font-size:18px;
 
 
-
-    color:#d6e8ee;
-
+    line-height:1.8;
 
 
 }
-/* =====================================
-        CARDS / RESOURCE SECTION
-===================================== */
+
+
+
+
+
+
+
+
+
+/* =========================
+        RESOURCE CARDS
+========================= */
 
 
 .card-container{
 
+
     display:flex;
+
 
     justify-content:center;
 
+
     flex-wrap:wrap;
+
 
     gap:35px;
 
+
     margin-top:45px;
 
+
 }
+
 
 
 
@@ -563,10 +721,10 @@ section p{
     padding:35px 30px;
 
 
-
     background:
 
-    rgba(255,255,255,0.08);
+
+    rgba(255,255,255,.09);
 
 
 
@@ -574,24 +732,29 @@ section p{
 
 
 
-    border-radius:20px;
+    border-radius:22px;
 
 
 
     border:
 
-    1px solid rgba(255,255,255,.14);
+    1px solid rgba(255,255,255,.15);
 
 
 
     box-shadow:
 
-    0 15px 40px rgba(0,0,0,.25);
+    0 20px 50px rgba(0,0,0,.25);
 
 
 
-    transition:.35s;
+    transition:.4s;
 
+
+
+    animation:
+
+    cardShow .8s ease;
 
 
 }
@@ -599,23 +762,54 @@ section p{
 
 
 
+
+@keyframes cardShow{
+
+
+from{
+
+opacity:0;
+
+transform:translateY(30px);
+
+}
+
+
+to{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+
+}
+
+
+
+
+
+
+
+
 .card:hover{
 
 
-    transform:translateY(-10px);
+    transform:
 
-
-
-    border-color:
-
-    rgba(80,220,255,.5);
+    translateY(-12px)
+    scale(1.03);
 
 
 
     box-shadow:
 
-    0 20px 45px rgba(0,170,255,.20);
+    0 25px 70px rgba(0,210,255,.25);
 
+
+
+    border-color:#36d9ff;
 
 
 }
@@ -630,20 +824,110 @@ section p{
     text-align:center;
 
 
-    font-size:25px;
-
-
-
     color:white;
 
+
+    font-size:25px;
 
 
     margin-bottom:25px;
 
 
+}
+/* =====================================================
+      STUDY GUIDE SECTION
+===================================================== */
 
-    font-weight:650;
 
+.study-container{
+
+
+    display:grid;
+
+
+    grid-template-columns:
+
+    repeat(auto-fit,minmax(320px,1fr));
+
+
+    gap:35px;
+
+
+    margin-top:50px;
+
+
+}
+
+
+
+
+
+.study-card{
+
+
+    background:
+
+
+    rgba(255,255,255,.08);
+
+
+
+    backdrop-filter:blur(20px);
+
+
+
+    padding:35px;
+
+
+
+    border-radius:25px;
+
+
+
+    border:
+
+    1px solid rgba(255,255,255,.15);
+
+
+
+    box-shadow:
+
+
+    0 20px 50px rgba(0,0,0,.3);
+
+
+
+    transition:.4s;
+
+
+
+    animation:
+
+    cardShow .8s ease;
+
+
+}
+
+
+
+
+.study-card:hover{
+
+
+    transform:
+
+    translateY(-12px);
+
+
+
+    box-shadow:
+
+
+    0 30px 70px rgba(0,220,255,.22);
+
+
+
+    border-color:#32d9ff;
 
 
 }
@@ -653,9 +937,179 @@ section p{
 
 
 
-/* ===============================
-             BUTTON
-================================ */
+.study-card h3{
+
+
+    text-align:center;
+
+
+    color:#ffffff;
+
+
+    font-size:30px;
+
+
+    margin-bottom:25px;
+
+
+
+}
+
+
+
+
+.study-card h4{
+
+
+    color:#62dcff;
+
+
+    font-size:21px;
+
+
+    margin-top:25px;
+
+
+    margin-bottom:12px;
+
+
+}
+
+
+
+
+
+.study-card p{
+
+
+    text-align:left;
+
+
+    font-size:16px;
+
+
+    line-height:1.8;
+
+
+    color:#d8edf3;
+
+
+}
+
+
+
+
+.study-card ul{
+
+
+    margin-top:15px;
+
+
+    padding-left:25px;
+
+
+}
+
+
+
+
+
+.study-card li{
+
+
+    color:#e5f5fa;
+
+
+    line-height:1.9;
+
+
+    margin-bottom:8px;
+
+
+}
+
+
+
+
+
+.study-card strong{
+
+
+    color:#6ee8ff;
+
+
+}
+
+
+
+
+
+
+
+
+
+/* =====================================================
+          YOUTUBE RESOURCE SECTION
+===================================================== */
+
+
+#youtube-resources{
+
+
+    margin-top:40px;
+
+
+}
+
+
+
+
+
+#youtube-resources .card{
+
+
+    min-height:350px;
+
+
+}
+
+
+
+
+#youtube-resources .card p{
+
+
+    text-align:center;
+
+
+    margin:10px 0;
+
+
+}
+
+
+
+
+
+#youtube-resources .card strong{
+
+
+    color:white;
+
+
+    font-size:18px;
+
+
+}
+
+
+
+
+
+
+/* =====================================================
+          BUTTON STYLE
+===================================================== */
 
 
 .card a{
@@ -664,48 +1118,50 @@ section p{
     display:block;
 
 
+    width:100%;
+
+
+    padding:14px;
+
+
+
+    margin-top:15px;
+
 
     text-align:center;
-
-
-
-    padding:13px;
-
-
-
-    border-radius:10px;
-
 
 
     text-decoration:none;
 
 
 
-    font-weight:600;
-
-
-
     color:white;
+
+
+    font-weight:700;
+
+
+
+    border-radius:12px;
 
 
 
     background:
 
 
-
     linear-gradient(
 
         135deg,
 
-        #0099d8,
+        #0099cc,
 
-        #006494
+        #006080
 
     );
 
 
 
-    transition:.3s;
+    transition:.35s;
 
 
 
@@ -724,21 +1180,25 @@ section p{
 
         135deg,
 
-        #00b8ff,
+        #00c6ff,
 
-        #0077aa
+        #00a878
 
     );
 
 
 
-    transform:scale(1.04);
+    transform:
+
+
+    scale(1.05);
 
 
 
     box-shadow:
 
-    0 8px 25px rgba(0,190,255,.35);
+
+    0 10px 30px rgba(0,220,255,.35);
 
 
 
@@ -751,9 +1211,10 @@ section p{
 
 
 
-/* ===============================
-          ABOUT SECTION
-================================ */
+
+/* =====================================================
+             ABOUT SECTION
+===================================================== */
 
 
 #about{
@@ -766,13 +1227,16 @@ section p{
 
 
 
+
+
 #about h2{
 
 
-    color:#6fe7ff;
+    color:#65ddff;
 
 
 }
+
 
 
 
@@ -783,8 +1247,10 @@ section p{
     font-size:20px;
 
 
-    margin:14px 0;
+    margin:15px;
 
+
+    color:#dceff5;
 
 
 }
@@ -792,10 +1258,11 @@ section p{
 
 
 
+
 #about strong{
 
 
-    font-size:30px;
+    font-size:32px;
 
 
     color:white;
@@ -819,7 +1286,11 @@ section p{
     font-weight:600;
 
 
+    transition:.3s;
+
+
 }
+
 
 
 
@@ -840,9 +1311,9 @@ section p{
 
 
 
-/* ===============================
-              FOOTER
-================================ */
+/* =====================================================
+             FOOTER
+===================================================== */
 
 
 footer{
@@ -851,8 +1322,7 @@ footer{
     margin-top:80px;
 
 
-
-    padding:40px;
+    padding:45px;
 
 
 
@@ -863,23 +1333,26 @@ footer{
     background:
 
 
-    rgba(2,12,22,.65);
+    rgba(0,15,25,.75);
+
+
+
+    backdrop-filter:blur(15px);
 
 
 
     border-top:
 
 
-    1px solid rgba(255,255,255,.1);
+    1px solid rgba(255,255,255,.12);
 
 
 
-    color:#cde5ec;
+    color:#cce9f2;
 
 
 
     line-height:2;
-
 
 
 }
@@ -891,10 +1364,9 @@ footer{
 
 
 
-
-/* ===============================
-          PROGRESS BAR
-================================ */
+/* =====================================================
+          SCROLL PROGRESS BAR
+===================================================== */
 
 
 #progressBar{
@@ -910,8 +1382,7 @@ footer{
 
 
 
-    height:4px;
-
+    height:5px;
 
 
     width:0%;
@@ -927,7 +1398,7 @@ footer{
 
         #00c6ff,
 
-        #00e5b0
+        #00ffb0
 
     );
 
@@ -947,9 +1418,9 @@ footer{
 
 
 
-/* ===============================
-        BACK TO TOP BUTTON
-================================ */
+/* =====================================================
+          BACK TO TOP BUTTON
+===================================================== */
 
 
 #topBtn{
@@ -958,52 +1429,43 @@ footer{
     position:fixed;
 
 
+    right:30px;
+
 
     bottom:30px;
 
 
 
-    right:30px;
+    width:55px;
 
 
-
-    width:52px;
-
-
-
-    height:52px;
+    height:55px;
 
 
 
     border-radius:50%;
 
 
-
     border:none;
-
-
-
-    display:none;
-
-
-
-    align-items:center;
-
-
-
-    justify-content:center;
 
 
 
     background:
 
 
-    #008fc7;
+    linear-gradient(
+
+        135deg,
+
+        #00b8ff,
+
+        #0077aa
+
+    );
 
 
 
     color:white;
-
 
 
     font-size:25px;
@@ -1014,25 +1476,37 @@ footer{
 
 
 
+    display:none;
+
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+
     box-shadow:
 
 
-    0 8px 25px rgba(0,150,255,.35);
+    0 10px 30px rgba(0,200,255,.35);
 
 
 
-    z-index:999;
+    transition:.3s;
 
 
 
 }
+
 
 
 
 #topBtn:hover{
 
 
-    transform:scale(1.1);
+    transform:scale(1.15) rotate(10deg);
 
 
 }
@@ -1045,16 +1519,15 @@ footer{
 
 
 
-
-/* ===============================
-          SCROLLBAR
-================================ */
+/* =====================================================
+             SCROLLBAR
+===================================================== */
 
 
 ::-webkit-scrollbar{
 
 
-    width:9px;
+    width:10px;
 
 
 }
@@ -1065,7 +1538,7 @@ footer{
 ::-webkit-scrollbar-track{
 
 
-    background:#061522;
+    background:#031522;
 
 
 }
@@ -1073,10 +1546,21 @@ footer{
 
 
 
+
 ::-webkit-scrollbar-thumb{
 
 
-    background:#008fc7;
+    background:
+
+
+    linear-gradient(
+
+        #00c6ff,
+
+        #00a878
+
+    );
+
 
 
     border-radius:20px;
@@ -1092,9 +1576,9 @@ footer{
 
 
 
-/* ===============================
-          MOBILE MENU
-================================ */
+/* =====================================================
+             MOBILE MENU
+===================================================== */
 
 
 .menu-btn{
@@ -1112,7 +1596,7 @@ footer{
     color:white;
 
 
-    font-size:28px;
+    font-size:30px;
 
 
     cursor:pointer;
@@ -1125,9 +1609,12 @@ footer{
 
 
 
-/* ===============================
-             MOBILE
-================================ */
+
+
+
+/* =====================================================
+             MOBILE RESPONSIVE
+===================================================== */
 
 
 @media(max-width:768px){
@@ -1137,14 +1624,12 @@ footer{
 header{
 
 
-    padding:15px 20px;
+    padding:
 
-
-    flex-direction:row;
+    15px 20px;
 
 
 }
-
 
 
 
@@ -1178,13 +1663,10 @@ header{
     position:absolute;
 
 
-
     top:70px;
 
 
-
     left:0;
-
 
 
     width:100%;
@@ -1198,11 +1680,11 @@ header{
     background:
 
 
-    rgba(3,18,32,.96);
+    rgba(2,20,35,.96);
 
 
 
-    padding:20px;
+    padding:25px;
 
 
 
@@ -1224,20 +1706,13 @@ header{
 
 
 
-
 nav ul{
 
 
     flex-direction:column;
 
 
-
     align-items:center;
-
-
-
-    gap:15px;
-
 
 
 }
@@ -1252,7 +1727,7 @@ nav ul{
     width:95%;
 
 
-    padding:40px 20px;
+    padding:45px 20px;
 
 
 }
@@ -1271,7 +1746,6 @@ nav ul{
 
 
 
-
 .hero p{
 
 
@@ -1283,11 +1757,12 @@ nav ul{
 
 
 
-
 section{
 
 
-    padding:60px 5%;
+    padding:
+
+    60px 5%;
 
 
 }
@@ -1307,14 +1782,40 @@ section h2{
 
 
 
-
 .card{
 
 
-    width:95%;
+    width:100%;
 
 
 }
+
+
+
+
+
+.study-container{
+
+
+    grid-template-columns:
+
+    1fr;
+
+
+}
+
+
+
+
+
+.study-card{
+
+
+    padding:25px;
+
+
+}
+
 
 
 
@@ -1328,13 +1829,15 @@ section h2{
     height:45px;
 
 
-    bottom:20px;
-
-
     right:20px;
 
 
+    bottom:20px;
+
+
 }
+
+
 
 
 }
