@@ -1841,3 +1841,42 @@ section h2{
 
 
 }
+.card a,
+button{
+
+    position:relative;
+    overflow:hidden;
+
+}
+
+
+.ripple{
+
+    position:absolute;
+
+    border-radius:50%;
+
+    background:
+    rgba(255,255,255,.35);
+
+    transform:scale(0);
+
+    animation:rippleAnimation .6s linear;
+
+}
+
+
+
+@keyframes rippleAnimation{
+
+
+to{
+
+    transform:scale(4);
+
+    opacity:0;
+
+}
+
+
+}
