@@ -826,3 +826,36 @@ transition:.15s;
     color:#ffffff;
     text-shadow:0 0 10px cyan;
 }
+/* About Me Section */
+
+#contact{
+    text-align:center;
+}
+
+#contact h2{
+    font-size:42px;
+    margin-bottom:30px;
+    color:#00ffff;
+    text-shadow:0 0 15px cyan;
+}
+
+#contact p{
+    font-size:22px;
+    margin:12px 0;
+}
+
+#contact strong{
+    font-size:28px;
+    color:#ffffff;
+}
+
+#contact a{
+    color:#00ffff;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+#contact a:hover{
+    color:#ffffff;
+    text-shadow:0 0 12px cyan;
+}
