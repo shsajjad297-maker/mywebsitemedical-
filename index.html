@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -17,6 +16,14 @@ Medical Learning Portal
 <link rel="stylesheet" href="style.css">
 
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
 </head>
 
 
@@ -24,38 +31,53 @@ Medical Learning Portal
 <body>
 
 
+<!-- Scroll Progress -->
+
+<div id="progressBar"></div>
+
+
+
+<!-- Navbar -->
+
 <header>
+
 
 <div class="logo">
 
-🩺 Medical Learning Portal
+🩺 Medical Learning
 
 </div>
 
 
+
 <nav>
 
-<button onclick="showSection('anatomy')">
-Anatomy
-</button>
+
+<a href="#home">
+Home
+</a>
 
 
-<button onclick="showSection('physiology')">
-Physiology
-</button>
+<a href="#subjects">
+Subjects
+</a>
 
 
-<button onclick="showSection('biochemistry')">
-Biochemistry
-</button>
-
-
-<button onclick="showQuiz()">
+<a href="#quiz">
 Quiz
-</button>
+</a>
+
 
 
 </nav>
+
+
+
+<button class="menu-btn">
+
+☰
+
+</button>
 
 
 </header>
@@ -64,21 +86,50 @@ Quiz
 
 
 
-<section class="hero">
+<!-- Hero Section -->
+
+
+<section class="hero" id="home">
+
+
+<div class="hero-content">
 
 
 <h1>
-Master Basic Medical Sciences
+
+Master Medical Science
+
 </h1>
 
 
 <p>
 
-Learn Anatomy, Physiology and Biochemistry with curated resources.
+A complete learning platform for Anatomy,
+Physiology and Biochemistry
 
 </p>
 
 
+
+<button>
+
+Start Learning
+
+</button>
+
+
+</div>
+
+
+
+<div class="medical-icon">
+
+🧬
+
+</div>
+
+
+
 </section>
 
 
@@ -87,11 +138,182 @@ Learn Anatomy, Physiology and Biochemistry with curated resources.
 
 
 
-<section id="content">
+<!-- Subjects -->
+
+
+<section id="subjects">
+
+
+<h2>
+
+Explore Subjects
+
+</h2>
+
+
+
+<div class="subject-container">
+
+
+
+<div class="subject-card anatomy">
+
+
+<div class="icon">
+
+🦴
+
+</div>
+
+
+<h3>
+
+Anatomy
+
+</h3>
+
+
+<p>
+
+Study human structure with videos,
+guidelines and quizzes.
+
+</p>
+
+
+<button>
+
+Open Anatomy
+
+</button>
+
+
+</div>
+
+
+
+
+
+<div class="subject-card physiology">
+
+
+<div class="icon">
+
+❤️
+
+</div>
+
+
+<h3>
+
+Physiology
+
+</h3>
+
+
+<p>
+
+Understand body functions with
+concept based learning.
+
+</p>
+
+
+<button>
+
+Open Physiology
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<div class="subject-card biochemistry">
+
+
+<div class="icon">
+
+🧪
+
+</div>
+
+
+<h3>
+
+Biochemistry
+
+</h3>
+
+
+<p>
+
+Learn molecular mechanisms and
+clinical concepts.
+
+</p>
+
+
+<button>
+
+Open Biochemistry
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+<!-- Quiz Preview -->
+
+
+<section id="quiz" class="quiz-preview">
+
+
+<h2>
+
+Medical Quiz Arena
+
+</h2>
+
+
+
+<p>
+
+Test your knowledge with random MCQ based quizzes.
+
+</p>
+
+
+
+<button>
+
+Start Quiz
+
+</button>
 
 
 
 </section>
+
+
 
 
 
@@ -100,8 +322,11 @@ Learn Anatomy, Physiology and Biochemistry with curated resources.
 
 <footer>
 
+
 <p>
+
 © 2026 Medical Learning Portal
+
 </p>
 
 
@@ -109,9 +334,11 @@ Learn Anatomy, Physiology and Biochemistry with curated resources.
 
 
 
+
 <script src="script.js"></script>
 
 
 </body>
+
 
 </html>
