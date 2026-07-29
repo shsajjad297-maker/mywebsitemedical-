@@ -583,3 +583,175 @@ font-size:24px;
 }
 
 }
+/* =====================================
+   PART 2C
+   Premium Effects
+======================================*/
+
+/* Floating Background */
+
+body::before{
+
+content:"";
+
+position:fixed;
+
+width:300px;
+
+height:300px;
+
+background:rgba(0,255,255,.15);
+
+border-radius:50%;
+
+top:-120px;
+
+left:-120px;
+
+filter:blur(90px);
+
+animation:moveOne 14s infinite alternate ease-in-out;
+
+z-index:-1;
+
+}
+
+body::after{
+
+content:"";
+
+position:fixed;
+
+width:350px;
+
+height:350px;
+
+background:rgba(255,0,255,.12);
+
+border-radius:50%;
+
+bottom:-150px;
+
+right:-120px;
+
+filter:blur(90px);
+
+animation:moveTwo 16s infinite alternate ease-in-out;
+
+z-index:-1;
+
+}
+
+@keyframes moveOne{
+
+0%{
+
+transform:translate(0,0);
+
+}
+
+100%{
+
+transform:translate(250px,180px);
+
+}
+
+}
+
+@keyframes moveTwo{
+
+0%{
+
+transform:translate(0,0);
+
+}
+
+100%{
+
+transform:translate(-220px,-180px);
+
+}
+
+}
+
+/* Beautiful Scrollbar */
+
+::-webkit-scrollbar{
+
+width:10px;
+
+}
+
+::-webkit-scrollbar-track{
+
+background:#08131f;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+background:linear-gradient(
+
+cyan,
+
+blue,
+
+magenta
+
+);
+
+border-radius:20px;
+
+}
+
+/* Smooth Button */
+
+.card a{
+
+transition:.4s;
+
+}
+
+.card a:hover{
+
+letter-spacing:1px;
+
+}
+
+/* Section Animation */
+
+section{
+
+opacity:0;
+
+transform:translateY(70px);
+
+transition:1s;
+
+}
+
+section.show{
+
+opacity:1;
+
+transform:translateY(0);
+
+}
+
+/* Better Footer */
+
+footer{
+
+border-top:1px solid rgba(255,255,255,.15);
+
+}
+
+/* Text Selection */
+
+::selection{
+
+background:cyan;
+
+color:black;
+
+}
