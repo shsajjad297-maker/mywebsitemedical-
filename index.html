@@ -1,196 +1,824 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reversi Strategy Game</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
-    body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-    h1 { margin-bottom: 12px; font-size: 2.2rem; color: #38bdf8; }
-    .status-panel { display: flex; gap: 24px; align-items: center; margin-bottom: 20px; background: #1e293b; padding: 12px 24px; border-radius: 12px; border: 1px solid #334155; }
-    .score { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-    .disc-icon { width: 18px; height: 18px; border-radius: 50%; display: inline-block; }
-    .disc-black { background: #000; border: 2px solid #64748b; }
-    .disc-white { background: #fff; border: 2px solid #cbd5e1; }
-    .controls { display: flex; gap: 12px; margin-bottom: 20px; }
-    button, select { background: #334155; color: #fff; border: 1px solid #475569; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; font-weight: 500; }
-    button:hover, select:hover { background: #475569; }
-    #board { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; background: #0f5132; padding: 10px; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); width: 100%; max-width: 480px; aspect-ratio: 1 / 1; }
-    .cell { background: #198754; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
-    .cell.valid-move::after { content: ''; width: 28%; height: 28%; background: rgba(255, 255, 255, 0.4); border-radius: 50%; }
-    .cell.valid-move:hover::after { background: rgba(255, 255, 255, 0.8); }
-    .piece { width: 82%; height: 82%; border-radius: 50%; transition: transform 0.3s ease; }
-    .piece.black { background: #000; box-shadow: inset -2px -2px 5px rgba(255,255,255,0.25); }
-    .piece.white { background: #fff; box-shadow: inset -2px -2px 5px rgba(0,0,0,0.35); }
-    #message { margin-top: 16px; font-size: 1.1rem; font-weight: 600; height: 28px; color: #f59e0b; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galactic Commander - RTS Engine</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #030712; font-family: system-ui, -apple-system, sans-serif; color: #f3f4f6; }
+        #canvas-container { width: 100vw; height: 100vh; position: relative; }
+        canvas { display: block; width: 100%; height: 100%; cursor: crosshair; }
+        
+        /* UI Overlay */
+        .hud-panel { position: absolute; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 16px; pointer-events: auto; }
+        #top-bar { top: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 24px; align-items: center; }
+        .resource-item { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
+        .res-icon { width: 12px; height: 12px; border-radius: 50%; }
+        .res-minerals { background: #38bdf8; box-shadow: 0 0 8px #38bdf8; }
+        .res-energy { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+        
+        #command-panel { bottom: 16px; left: 16px; width: 320px; display: flex; flex-direction: column; gap: 8px; }
+        .panel-title { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #9ca3af; font-weight: 700; margin-bottom: 4px; }
+        .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+        .btn { background: #1e293b; border: 1px solid #334155; color: #f3f4f6; padding: 8px; border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s ease; text-align: center; }
+        .btn:hover { background: #334155; border-color: #38bdf8; color: #38bdf8; }
+        .btn:active { transform: scale(0.96); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; border-color: #334155; }
+        
+        #minimap-container { bottom: 16px; right: 16px; width: 180px; height: 180px; padding: 4px; }
+        #minimap { width: 100%; height: 100%; background: #0b0f19; border-radius: 4px; border: 1px solid #1e293b; }
+        
+        #selection-card { top: 16px; left: 16px; width: 240px; display: none; }
+        .unit-info { font-size: 13px; line-height: 1.5; }
+        .progress-bar { width: 100%; height: 6px; background: #334155; border-radius: 3px; overflow: hidden; margin-top: 4px; }
+        .progress-fill { height: 100%; background: #22c55e; width: 100%; transition: width 0.1s linear; }
+
+        #controls-hint { top: 16px; right: 16px; font-size: 11px; color: #6b7280; text-align: right; pointer-events: none; }
+    </style>
 </head>
 <body>
-  <h1>Reversi</h1>
-  <div class="status-panel">
-    <div class="score"><span class="disc-icon disc-black"></span> Black: <span id="black-score">2</span></div>
-    <div class="score"><span class="disc-icon disc-white"></span> White: <span id="white-score">2</span></div>
-  </div>
-  <div class="controls">
-    <button onclick="resetGame()">New Game</button>
-    <select id="mode-select" onchange="resetGame()">
-      <option value="ai">Vs AI (White)</option>
-      <option value="pvp">2 Players Local</option>
-    </select>
-  </div>
-  <div id="board"></div>
-  <div id="message">Turn: Black</div>
+    <div id="canvas-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- HUD Overlay -->
+        <div id="top-bar" class="hud-panel">
+            <div class="resource-item">
+                <div class="res-icon res-minerals"></div>
+                <span>Minerals: <span id="res-minerals-val">500</span></span>
+            </div>
+            <div class="resource-item">
+                <div class="res-icon res-energy"></div>
+                <span>Energy: <span id="res-energy-val">200</span></span>
+            </div>
+            <div class="resource-item">
+                <span>Fleet Supply: <span id="res-supply-val">0/50</span></span>
+            </div>
+        </div>
 
-  <script>
-    const BOARD_SIZE = 8;
-    const EMPTY = 0, BLACK = 1, WHITE = 2;
-    const DIRS = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
-    
-    // Positional weight map favoring corners and edge stability
-    const WEIGHTS = [
-      [100, -20, 10,  5,  5, 10, -20, 100],
-      [-20, -50, -2, -2, -2, -2, -50, -20],
-      [ 10,  -2,  5,  2,  2,  5,  -2,  10],
-      [  5,  -2,  2,  1,  1,  2,  -2,   5],
-      [  5,  -2,  2,  1,  1,  2,  -2,   5],
-      [ 10,  -2,  5,  2,  2,  5,  -2,  10],
-      [-20, -50, -2, -2, -2, -2, -50, -20],
-      [100, -20, 10,  5,  5, 10, -20, 100]
-    ];
+        <div id="selection-card" class="hud-panel">
+            <div class="panel-title" id="sel-title">Unit Selected</div>
+            <div class="unit-info" id="sel-info">HP: 100/100</div>
+            <div class="progress-bar"><div id="sel-hp-bar" class="progress-fill"></div></div>
+        </div>
 
-    let board = [];
-    let currentPlayer = BLACK;
-    let isGameOver = false;
+        <div id="command-panel" class="hud-panel">
+            <div class="panel-title">Command Console</div>
+            <div class="action-grid">
+                <button class="btn" id="btn-build-miner">Build Miner (100M)</button>
+                <button class="btn" id="btn-build-fighter">Build Fighter (150M)</button>
+                <button class="btn" id="btn-build-cruiser">Build Cruiser (400M)</button>
+            </div>
+        </div>
 
-    function initBoard() {
-      board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(EMPTY));
-      board[3][3] = WHITE; board[3][4] = BLACK;
-      board[4][3] = BLACK; board[4][4] = WHITE;
-      currentPlayer = BLACK;
-      isGameOver = false;
-      render();
-    }
+        <div id="minimap-container" class="hud-panel">
+            <canvas id="minimap"></canvas>
+        </div>
 
-    function render() {
-      const boardEl = document.getElementById('board');
-      boardEl.innerHTML = '';
-      const validMoves = getValidMoves(board, currentPlayer);
+        <div id="controls-hint">
+            Left Click: Select / Drag Box<br>
+            Right Click: Command Move / Attack<br>
+            Middle Drag / WASD: Pan Camera<br>
+            Scroll: Zoom In/Out
+        </div>
+    </div>
 
-      let blackCount = 0, whiteCount = 0;
-      for (let r = 0; r < BOARD_SIZE; r++) {
-        for (let c = 0; c < BOARD_SIZE; c++) {
-          if (board[r][c] === BLACK) blackCount++;
-          if (board[r][c] === WHITE) whiteCount++;
+    <script>
+        /**
+         * GALACTIC COMMANDER - CORE ENGINE & ARCHITECTURE
+         */
+        
+        // --- CONSTANTS & SYSTEM CONFIG ---
+        const WORLD_SIZE = 4000;
+        const TEAM_PLAYER = 1;
+        const TEAM_ENEMY = 2;
+        const TEAM_NEUTRAL = 0;
 
-          const cell = document.createElement('div');
-          cell.className = 'cell';
-          if (board[r][c] !== EMPTY) {
-            const piece = document.createElement('div');
-            piece.className = `piece ${board[r][c] === BLACK ? 'black' : 'white'}`;
-            cell.appendChild(piece);
-          } else if (!isGameOver && validMoves.some(m => m.r === r && m.c === c)) {
-            cell.classList.add('valid-move');
-            cell.addEventListener('click', () => handleMove(r, c));
-          }
-          boardEl.appendChild(cell);
+        // --- ENGINE VECTOR MATHEMATICS ---
+        class Vec2 {
+            constructor(x = 0, y = 0) { this.x = x; this.y = y; }
+            set(x, y) { this.x = x; this.y = y; return this; }
+            copy(v) { this.x = v.x; this.y = v.y; return this; }
+            clone() { return new Vec2(this.x, this.y); }
+            add(v) { this.x += v.x; this.y += v.y; return this; }
+            sub(v) { this.x -= v.x; this.y -= v.y; return this; }
+            mult(n) { this.x *= n; this.y *= n; return this; }
+            div(n) { this.x /= n; this.y /= n; return this; }
+            magSq() { return this.x * this.x + this.y * this.y; }
+            mag() { return Math.sqrt(this.magSq()); }
+            heading() { return Math.atan2(this.y, this.x); }
+            normalize() { const m = this.mag(); if (m !== 0) this.div(m); return this; }
+            dist(v) { return Math.sqrt((this.x - v.x)**2 + (this.y - v.y)**2); }
+            distSq(v) { return (this.x - v.x)**2 + (this.y - v.y)**2; }
+            limit(max) { const mSq = this.magSq(); if (mSq > max * max) { this.normalize().mult(max); } return this; }
+            static fromAngle(angle) { return new Vec2(Math.cos(angle), Math.sin(angle)); }
         }
-      }
 
-      document.getElementById('black-score').innerText = blackCount;
-      document.getElementById('white-score').innerText = whiteCount;
+        // --- SPATIAL PARTITIONING GRID ---
+        class SpatialHash {
+            constructor(cellSize = 250) {
+                this.cellSize = cellSize;
+                this.grid = new Map();
+            }
+            _key(x, y) {
+                const cx = Math.floor(x / this.cellSize);
+                const cy = Math.floor(y / this.cellSize);
+                return `${cx},${cy}`;
+            }
+            clear() { this.grid.clear(); }
+            insert(entity) {
+                const key = this._key(entity.pos.x, entity.pos.y);
+                if (!this.grid.has(key)) this.grid.set(key, []);
+                this.grid.get(key).push(entity);
+            }
+            getNearby(pos, radius) {
+                const results = [];
+                const minX = Math.floor((pos.x - radius) / this.cellSize);
+                const maxX = Math.floor((pos.x + radius) / this.cellSize);
+                const minY = Math.floor((pos.y - radius) / this.cellSize);
+                const maxY = Math.floor((pos.y + radius) / this.cellSize);
 
-      if (isGameOver) {
-        if (blackCount > whiteCount) document.getElementById('message').innerText = "Game Over! Black Wins!";
-        else if (whiteCount > blackCount) document.getElementById('message').innerText = "Game Over! White Wins!";
-        else document.getElementById('message').innerText = "Game Over! It's a Draw!";
-      } else {
-        document.getElementById('message').innerText = `Turn: ${currentPlayer === BLACK ? 'Black' : 'White'}`;
-      }
-    }
-
-    function getValidMoves(b, player) {
-      const moves = [];
-      for (let r = 0; r < BOARD_SIZE; r++) {
-        for (let c = 0; c < BOARD_SIZE; c++) {
-          if (b[r][c] === EMPTY) {
-            const flipped = getFlippedDiscs(b, r, c, player);
-            if (flipped.length > 0) moves.push({ r, c, flipped });
-          }
+                for (let x = minX; x <= maxX; x++) {
+                    for (let y = minY; y <= maxY; y++) {
+                        const cell = this.grid.get(`${x},${y}`);
+                        if (cell) {
+                            for (let i = 0; i < cell.length; i++) {
+                                results.push(cell[i]);
+                            }
+                        }
+                    }
+                }
+                return results;
+            }
         }
-      }
-      return moves;
-    }
 
-    function getFlippedDiscs(b, r, c, player) {
-      const opponent = player === BLACK ? WHITE : BLACK;
-      let flippedTotal = [];
-
-      for (let [dr, dc] of DIRS) {
-        let nr = r + dr, nc = c + dc;
-        let line = [];
-        while (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE && b[nr][nc] === opponent) {
-          line.push({ r: nr, c: nc });
-          nr += dr; nc += dc;
+        // --- CAMERA ENGINE ---
+        class Camera {
+            constructor() {
+                this.pos = new Vec2(WORLD_SIZE / 2, WORLD_SIZE / 2);
+                this.zoom = 1;
+                this.minZoom = 0.3;
+                this.maxZoom = 2.5;
+                this.viewportWidth = window.innerWidth;
+                this.viewportHeight = window.innerHeight;
+            }
+            screenToWorld(screenPos) {
+                return new Vec2(
+                    (screenPos.x - this.viewportWidth / 2) / this.zoom + this.pos.x,
+                    (screenPos.y - this.viewportHeight / 2) / this.zoom + this.pos.y
+                );
+            }
+            worldToScreen(worldPos) {
+                return new Vec2(
+                    (worldPos.x - this.pos.x) * this.zoom + this.viewportWidth / 2,
+                    (worldPos.y - this.pos.y) * this.zoom + this.viewportHeight / 2
+                );
+            }
+            updateViewport(w, h) {
+                this.viewportWidth = w;
+                this.viewportHeight = h;
+            }
         }
-        if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE && b[nr][nc] === player && line.length > 0) {
-          flippedTotal = flippedTotal.concat(line);
+
+        // --- PARTICLE SYSTEM ENGINE ---
+        class Particle {
+            constructor(pos, vel, color, size, life) {
+                this.pos = pos.clone();
+                this.vel = vel.clone();
+                this.color = color;
+                this.size = size;
+                this.life = life;
+                this.maxLife = life;
+            }
+            update(dt) {
+                this.pos.add(Vec2.prototype.mult.call(this.vel.clone(), dt));
+                this.life -= dt;
+            }
+            draw(ctx, camera) {
+                if (this.life <= 0) return;
+                const screen = camera.worldToScreen(this.pos);
+                const alpha = Math.max(0, this.life / this.maxLife);
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(screen.x, screen.y, this.size * camera.zoom, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
         }
-      }
-      return flippedTotal;
-    }
 
-    function makeMove(r, c, flipped) {
-      board[r][c] = currentPlayer;
-      flipped.forEach(p => board[p.r][p.c] = currentPlayer);
-      currentPlayer = currentPlayer === BLACK ? WHITE : BLACK;
-      checkGameState();
-    }
-
-    function handleMove(r, c) {
-      const validMoves = getValidMoves(board, currentPlayer);
-      const move = validMoves.find(m => m.r === r && m.c === c);
-      if (!move) return;
-
-      makeMove(r, c, move.flipped);
-      render();
-
-      const mode = document.getElementById('mode-select').value;
-      if (!isGameOver && mode === 'ai' && currentPlayer === WHITE) {
-        setTimeout(aiMove, 400);
-      }
-    }
-
-    function aiMove() {
-      const validMoves = getValidMoves(board, WHITE);
-      if (validMoves.length === 0) return;
-
-      let bestMove = validMoves[0];
-      let bestScore = -Infinity;
-
-      for (let move of validMoves) {
-        let score = WEIGHTS[move.r][move.c] + (move.flipped.length * 2);
-        if (score > bestScore) {
-          bestScore = score;
-          bestMove = move;
+        class ParticleSystem {
+            constructor() { this.particles = []; }
+            emit(pos, count, color, speed, maxLife) {
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const vel = Vec2.fromAngle(angle).mult((Math.random() * 0.7 + 0.3) * speed);
+                    this.particles.push(new Particle(pos, vel, color, Math.random() * 2 + 1, Math.random() * maxLife + 0.1));
+                }
+            }
+            update(dt) {
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    this.particles[i].update(dt);
+                    if (this.particles[i].life <= 0) this.particles.splice(i, 1);
+                }
+            }
+            draw(ctx, camera) {
+                for (let p of this.particles) p.draw(ctx, camera);
+            }
         }
-      }
 
-      makeMove(bestMove.r, bestMove.c, bestMove.flipped);
-      render();
-    }
+        // --- PROJECTILE SYSTEM ---
+        class Projectile {
+            constructor(pos, targetPos, team, damage, speed, range) {
+                this.pos = pos.clone();
+                this.startPos = pos.clone();
+                this.vel = Vec2.prototype.sub.call(targetPos.clone(), pos).normalize().mult(speed);
+                this.team = team;
+                this.damage = damage;
+                this.range = range;
+                this.alive = true;
+                this.radius = 3;
+            }
+            update(dt, spatialHash, particleSystem) {
+                if (!this.alive) return;
+                this.pos.add(Vec2.prototype.mult.call(this.vel.clone(), dt));
 
-    function checkGameState() {
-      let validMoves = getValidMoves(board, currentPlayer);
-      if (validMoves.length === 0) {
-        currentPlayer = currentPlayer === BLACK ? WHITE : BLACK;
-        validMoves = getValidMoves(board, currentPlayer);
-        if (validMoves.length === 0) isGameOver = true;
-      }
-    }
+                if (this.pos.distSq(this.startPos) > this.range * this.range) {
+                    this.alive = false;
+                    return;
+                }
 
-    function resetGame() { initBoard(); }
-    initBoard();
-  </script>
+                // Collision detection via spatial hash
+                const nearby = spatialHash.getNearby(this.pos, 30);
+                for (let entity of nearby) {
+                    if (entity.team !== this.team && entity.team !== TEAM_NEUTRAL && entity.hp > 0) {
+                        if (this.pos.distSq(entity.pos) < (this.radius + entity.radius) ** 2) {
+                            entity.takeDamage(this.damage);
+                            particleSystem.emit(this.pos, 8, "#f59e0b", 80, 0.3);
+                            this.alive = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            draw(ctx, camera) {
+                if (!this.alive) return;
+                const screen = camera.worldToScreen(this.pos);
+                ctx.save();
+                ctx.fillStyle = this.team === TEAM_PLAYER ? "#38bdf8" : "#ef4444";
+                ctx.shadowColor = ctx.fillStyle;
+                ctx.shadowBlur = 6;
+                ctx.beginPath();
+                ctx.arc(screen.x, screen.y, this.radius * camera.zoom, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // --- GAME ENTITIES ENGINE ---
+        class Entity {
+            constructor(x, y, team, radius, hp) {
+                this.id = Math.random().toString(36).substr(2, 9);
+                this.pos = new Vec2(x, y);
+                this.vel = new Vec2();
+                this.acc = new Vec2();
+                this.angle = 0;
+                this.team = team;
+                this.radius = radius;
+                this.maxHp = hp;
+                this.hp = hp;
+                this.selected = false;
+                this.alive = true;
+            }
+            takeDamage(amount) {
+                this.hp -= amount;
+                if (this.hp <= 0) {
+                    this.hp = 0;
+                    this.alive = false;
+                }
+            }
+            applyForce(force) { this.acc.add(force); }
+            update(dt) {
+                this.vel.add(Vec2.prototype.mult.call(this.acc.clone(), dt));
+                this.pos.add(Vec2.prototype.mult.call(this.vel.clone(), dt));
+                this.acc.set(0, 0);
+            }
+        }
+
+        class ResourceNode extends Entity {
+            constructor(x, y, amount = 2000) {
+                super(x, y, TEAM_NEUTRAL, 18, 500);
+                this.resources = amount;
+                this.maxResources = amount;
+            }
+            draw(ctx, camera) {
+                const screen = camera.worldToScreen(this.pos);
+                ctx.save();
+                ctx.translate(screen.x, screen.y);
+                ctx.fillStyle = "#0284c7";
+                ctx.strokeStyle = "#38bdf8";
+                ctx.lineWidth = 2 * camera.zoom;
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI) / 3;
+                    const r = this.radius * camera.zoom;
+                    const px = r * Math.cos(angle);
+                    const py = r * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        class Ship extends Entity {
+            constructor(x, y, team, typeConfig) {
+                super(x, y, team, typeConfig.radius, typeConfig.hp);
+                this.type = typeConfig.name;
+                this.maxSpeed = typeConfig.speed;
+                this.maxForce = typeConfig.force;
+                this.range = typeConfig.range;
+                this.damage = typeConfig.damage;
+                this.fireRate = typeConfig.fireRate;
+                this.cost = typeConfig.cost;
+                this.cooldown = 0;
+                this.targetPos = null;
+                this.targetEntity = null;
+                this.state = "IDLE";
+            }
+
+            update(dt, game) {
+                if (!this.alive) return;
+
+                if (this.cooldown > 0) this.cooldown -= dt;
+
+                // AI & Behavior State Handling
+                this.handleBehavior(game);
+
+                // Movement Integration
+                this.vel.add(Vec2.prototype.mult.call(this.acc.clone(), dt));
+                this.vel.limit(this.maxSpeed);
+                this.pos.add(Vec2.prototype.mult.call(this.vel.clone(), dt));
+                this.acc.set(0, 0);
+
+                if (this.vel.magSq() > 0.1) {
+                    this.angle = this.vel.heading();
+                }
+
+                super.update(dt);
+            }
+
+            handleBehavior(game) {
+                // Steering towards target location
+                if (this.targetPos) {
+                    const d = this.pos.dist(this.targetPos);
+                    if (d > 10) {
+                        const desired = Vec2.prototype.sub.call(this.targetPos.clone(), this.pos).normalize().mult(this.maxSpeed);
+                        const steer = Vec2.prototype.sub.call(desired, this.vel).limit(this.maxForce);
+                        this.applyForce(steer);
+                    } else {
+                        this.targetPos = null;
+                        this.vel.mult(0.9);
+                    }
+                }
+
+                // Combat target handling
+                if (!this.targetEntity || !this.targetEntity.alive) {
+                    // Auto scan for nearest enemy
+                    const nearby = game.spatialHash.getNearby(this.pos, this.range * 1.5);
+                    let closest = null;
+                    let minDist = Infinity;
+                    for (let entity of nearby) {
+                        if (entity.team !== this.team && entity.team !== TEAM_NEUTRAL && entity.hp > 0) {
+                            const dist = this.pos.distSq(entity.pos);
+                            if (dist < minDist) {
+                                minDist = dist;
+                                closest = entity;
+                            }
+                        }
+                    }
+                    if (closest && Math.sqrt(minDist) <= this.range * 1.5) {
+                        this.targetEntity = closest;
+                    }
+                }
+
+                if (this.targetEntity && this.targetEntity.alive) {
+                    const dist = this.pos.dist(this.targetEntity.pos);
+                    if (dist <= this.range) {
+                        // Engagement distance reached - stop and attack
+                        this.vel.mult(0.8);
+                        this.angle = Vec2.prototype.sub.call(this.targetEntity.pos.clone(), this.pos).heading();
+                        if (this.cooldown <= 0) {
+                            game.projectiles.push(new Projectile(this.pos, this.targetEntity.pos, this.team, this.damage, 400, this.range));
+                            this.cooldown = 1 / this.fireRate;
+                        }
+                    } else if (!this.targetPos) {
+                        // Chase target
+                        const desired = Vec2.prototype.sub.call(this.targetEntity.pos.clone(), this.pos).normalize().mult(this.maxSpeed);
+                        const steer = Vec2.prototype.sub.call(desired, this.vel).limit(this.maxForce);
+                        this.applyForce(steer);
+                    }
+                }
+            }
+
+            draw(ctx, camera) {
+                const screen = camera.worldToScreen(this.pos);
+                ctx.save();
+                ctx.translate(screen.x, screen.y);
+                ctx.rotate(this.angle + Math.PI / 2);
+
+                const size = this.radius * camera.zoom;
+
+                // Color themes
+                const primaryColor = this.team === TEAM_PLAYER ? "#38bdf8" : "#ef4444";
+                
+                // Ship Vector Path Rendering
+                ctx.fillStyle = primaryColor;
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 1 * camera.zoom;
+
+                ctx.beginPath();
+                ctx.moveTo(0, -size * 1.2);
+                ctx.lineTo(size * 0.8, size * 0.8);
+                ctx.lineTo(0, size * 0.4);
+                ctx.lineTo(-size * 0.8, size * 0.8);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.restore();
+
+                // UI Selection Ring & Health Bar Overlay
+                if (this.selected || this.hp < this.maxHp) {
+                    ctx.save();
+                    if (this.selected) {
+                        ctx.strokeStyle = "#22c55e";
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath();
+                        ctx.arc(screen.x, screen.y, size * 1.4, 0, Math.PI * 2);
+                        ctx.stroke();
+                    }
+
+                    // Health Bar
+                    const barW = 24 * camera.zoom;
+                    const barH = 4 * camera.zoom;
+                    const barX = screen.x - barW / 2;
+                    const barY = screen.y - size * 1.6;
+
+                    ctx.fillStyle = "rgba(0,0,0,0.5)";
+                    ctx.fillRect(barX, barY, barW, barH);
+                    ctx.fillStyle = this.hp / this.maxHp > 0.4 ? "#22c55e" : "#ef4444";
+                    ctx.fillRect(barX, barY, barW * (this.hp / this.maxHp), barH);
+                    ctx.restore();
+                }
+            }
+        }
+
+        // --- SHIP TYPES CONFIGURATIONS ---
+        const SHIP_TYPES = {
+            MINER: { name: "Miner", radius: 10, hp: 80, speed: 120, force: 180, range: 40, damage: 2, fireRate: 1, cost: 100 },
+            FIGHTER: { name: "Fighter", radius: 12, hp: 150, speed: 200, force: 300, range: 180, damage: 18, fireRate: 1.8, cost: 150 },
+            CRUISER: { name: "Cruiser", radius: 22, hp: 600, speed: 90, force: 120, range: 320, damage: 65, fireRate: 0.6, cost: 400 }
+        };
+
+        // --- MAIN ENGINE & GAME STATE CONTROLLER ---
+        class GameEngine {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.minimapCanvas = document.getElementById('minimap');
+                this.minimapCtx = this.minimapCanvas.getContext('2d');
+
+                this.camera = new Camera();
+                this.spatialHash = new SpatialHash();
+                this.particleSystem = new ParticleSystem();
+
+                this.entities = [];
+                this.projectiles = [];
+                this.selection = [];
+
+                this.resources = { minerals: 500, energy: 200 };
+                this.dragSelectStart = null;
+                this.isPanning = false;
+                this.panStart = new Vec2();
+
+                this.lastTime = performance.now();
+
+                this.init();
+            }
+
+            init() {
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+
+                this.setupInputs();
+                this.generateWorld();
+
+                // Start loop
+                requestAnimationFrame((t) => this.loop(t));
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+                this.camera.updateViewport(this.canvas.width, this.canvas.height);
+
+                this.minimapCanvas.width = 180;
+                this.minimapCanvas.height = 180;
+            }
+
+            generateWorld() {
+                // Player Home Fleet
+                for (let i = 0; i < 4; i++) {
+                    this.entities.push(new Ship(WORLD_SIZE / 2 + (i - 2) * 40, WORLD_SIZE / 2 + 100, TEAM_PLAYER, SHIP_TYPES.FIGHTER));
+                }
+                this.entities.push(new Ship(WORLD_SIZE / 2, WORLD_SIZE / 2 + 180, TEAM_PLAYER, SHIP_TYPES.CRUISER));
+
+                // Enemy Outpost
+                for (let i = 0; i < 5; i++) {
+                    this.entities.push(new Ship(WORLD_SIZE / 2 + (i - 2.5) * 50, WORLD_SIZE / 2 - 800, TEAM_ENEMY, SHIP_TYPES.FIGHTER));
+                }
+                this.entities.push(new Ship(WORLD_SIZE / 2, WORLD_SIZE / 2 - 920, TEAM_ENEMY, SHIP_TYPES.CRUISER));
+
+                // Resource Fields
+                for (let i = 0; i < 12; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const dist = Math.random() * 1200 + 300;
+                    this.entities.push(new ResourceNode(WORLD_SIZE / 2 + Math.cos(angle) * dist, WORLD_SIZE / 2 + Math.sin(angle) * dist));
+                }
+            }
+
+            setupInputs() {
+                // UI Build Button Handlers
+                document.getElementById('btn-build-miner').onclick = () => this.buildShip(SHIP_TYPES.MINER);
+                document.getElementById('btn-build-fighter').onclick = () => this.buildShip(SHIP_TYPES.FIGHTER);
+                document.getElementById('btn-build-cruiser').onclick = () => this.buildShip(SHIP_TYPES.CRUISER);
+
+                // Mouse Interactions
+                this.canvas.addEventListener('mousedown', (e) => {
+                    const mouseWorld = this.camera.screenToWorld(new Vec2(e.clientX, e.clientY));
+
+                    if (e.button === 0) { // Left Click Box Select
+                        this.dragSelectStart = new Vec2(e.clientX, e.clientY);
+                    } else if (e.button === 2) { // Right Click Command
+                        e.preventDefault();
+                        this.issueCommand(mouseWorld);
+                    } else if (e.button === 1) { // Middle Click Pan
+                        this.isPanning = true;
+                        this.panStart.set(e.clientX, e.clientY);
+                    }
+                });
+
+                this.canvas.addEventListener('mousemove', (e) => {
+                    if (this.isPanning) {
+                        const dx = (e.clientX - this.panStart.x) / this.camera.zoom;
+                        const dy = (e.clientY - this.panStart.y) / this.camera.zoom;
+                        this.camera.pos.sub(new Vec2(dx, dy));
+                        this.panStart.set(e.clientX, e.clientY);
+                    }
+                });
+
+                window.addEventListener('mouseup', (e) => {
+                    if (e.button === 0 && this.dragSelectStart) {
+                        this.finishBoxSelect(new Vec2(e.clientX, e.clientY));
+                        this.dragSelectStart = null;
+                    }
+                    if (e.button === 1) this.isPanning = false;
+                });
+
+                this.canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+                // Zoom Handler
+                this.canvas.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+                    this.camera.zoom = Math.min(Math.max(this.camera.zoom * zoomFactor, this.camera.minZoom), this.camera.maxZoom);
+                });
+            }
+
+            buildShip(type) {
+                if (this.resources.minerals >= type.cost) {
+                    this.resources.minerals -= type.cost;
+                    const spawnPos = new Vec2(WORLD_SIZE / 2 + (Math.random() - 0.5) * 100, WORLD_SIZE / 2 + 200);
+                    const newShip = new Ship(spawnPos.x, spawnPos.y, TEAM_PLAYER, type);
+                    this.entities.push(newShip);
+                    this.particleSystem.emit(spawnPos, 15, "#38bdf8", 100, 0.5);
+                }
+            }
+
+            issueCommand(worldTarget) {
+                // Check if targeting an enemy
+                let targetEnemy = null;
+                const nearby = this.spatialHash.getNearby(worldTarget, 30);
+                for (let ent of nearby) {
+                    if (ent.team === TEAM_ENEMY && ent.pos.dist(worldTarget) <= ent.radius) {
+                        targetEnemy = ent;
+                        break;
+                    }
+                }
+
+                for (let unit of this.selection) {
+                    if (unit instanceof Ship) {
+                        if (targetEnemy) {
+                            unit.targetEntity = targetEnemy;
+                            unit.targetPos = null;
+                        } else {
+                            unit.targetEntity = null;
+                            unit.targetPos = worldTarget.clone();
+                        }
+                    }
+                }
+            }
+
+            finishBoxSelect(endScreenPos) {
+                const startWorld = this.camera.screenToWorld(this.dragSelectStart);
+                const endWorld = this.camera.screenToWorld(endScreenPos);
+
+                const minX = Math.min(startWorld.x, endWorld.x);
+                const maxX = Math.max(startWorld.x, endWorld.x);
+                const minY = Math.min(startWorld.y, endWorld.y);
+                const maxY = Math.max(startWorld.y, endWorld.y);
+
+                // Reset prior selection
+                for (let ent of this.selection) ent.selected = false;
+                this.selection = [];
+
+                const isSingleClick = this.dragSelectStart.dist(endScreenPos) < 5;
+
+                for (let ent of this.entities) {
+                    if (ent.team === TEAM_PLAYER) {
+                        if (isSingleClick) {
+                            if (ent.pos.dist(startWorld) <= ent.radius * 1.5) {
+                                ent.selected = true;
+                                this.selection.push(ent);
+                                break;
+                            }
+                        } else {
+                            if (ent.pos.x >= minX && ent.pos.x <= maxX && ent.pos.y >= minY && ent.pos.y <= maxY) {
+                                ent.selected = true;
+                                this.selection.push(ent);
+                            }
+                        }
+                    }
+                }
+            }
+
+            update(dt) {
+                // Update Spatial Hash Grid
+                this.spatialHash.clear();
+                for (let ent of this.entities) {
+                    if (ent.alive) this.spatialHash.insert(ent);
+                }
+
+                // Update Entities
+                for (let i = this.entities.length - 1; i >= 0; i--) {
+                    const ent = this.entities[i];
+                    ent.update(dt, this);
+                    if (!ent.alive) {
+                        this.particleSystem.emit(ent.pos, 25, "#f59e0b", 120, 0.8);
+                        this.entities.splice(i, 1);
+                    }
+                }
+
+                // Update Projectiles
+                for (let i = this.projectiles.length - 1; i >= 0; i--) {
+                    const proj = this.projectiles[i];
+                    proj.update(dt, this.spatialHash, this.particleSystem);
+                    if (!proj.alive) this.projectiles.splice(i, 1);
+                }
+
+                this.particleSystem.update(dt);
+                this.updateUI();
+            }
+
+            updateUI() {
+                document.getElementById('res-minerals-val').innerText = Math.floor(this.resources.minerals);
+                document.getElementById('res-energy-val').innerText = Math.floor(this.resources.energy);
+                
+                const playerCount = this.entities.filter(e => e.team === TEAM_PLAYER && e instanceof Ship).length;
+                document.getElementById('res-supply-val').innerText = `${playerCount}/50`;
+
+                // Update selection HUD card
+                const selCard = document.getElementById('selection-card');
+                if (this.selection.length > 0) {
+                    selCard.style.display = "block";
+                    const first = this.selection[0];
+                    document.getElementById('sel-title').innerText = `${first.type || 'Unit'} (${this.selection.length})`;
+                    document.getElementById('sel-info').innerText = `HP: ${Math.ceil(first.hp)} / ${first.maxHp}`;
+                    document.getElementById('sel-hp-bar').style.width = `${(first.hp / first.maxHp) * 100}%`;
+                } else {
+                    selCard.style.display = "none";
+                }
+            }
+
+            draw() {
+                // Clear Frame
+                this.ctx.fillStyle = "#030712";
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Render Starfield Background Grid
+                this.drawGrid();
+
+                // Draw Entities
+                for (let ent of this.entities) ent.draw(this.ctx, this.camera);
+
+                // Draw Projectiles
+                for (let proj of this.projectiles) proj.draw(this.ctx, this.camera);
+
+                // Draw Particles
+                this.particleSystem.draw(this.ctx, this.camera);
+
+                // Draw Selection Drag Box
+                if (this.dragSelectStart) {
+                    const currentMouse = new Vec2(window.event?.clientX || 0, window.event?.clientY || 0);
+                    this.ctx.strokeStyle = "#22c55e";
+                    this.ctx.lineWidth = 1;
+                    this.ctx.fillStyle = "rgba(34, 197, 94, 0.1)";
+                    const w = currentMouse.x - this.dragSelectStart.x;
+                    const h = currentMouse.y - this.dragSelectStart.y;
+                    this.ctx.fillRect(this.dragSelectStart.x, this.dragSelectStart.y, w, h);
+                    this.ctx.strokeRect(this.dragSelectStart.x, this.dragSelectStart.y, w, h);
+                }
+
+                // Render Minimap
+                this.drawMinimap();
+            }
+
+            drawGrid() {
+                const gridSize = 200;
+                const topLeft = this.camera.screenToWorld(new Vec2(0, 0));
+                const bottomRight = this.camera.screenToWorld(new Vec2(this.canvas.width, this.canvas.height));
+
+                const startX = Math.floor(topLeft.x / gridSize) * gridSize;
+                const endX = Math.ceil(bottomRight.x / gridSize) * gridSize;
+                const startY = Math.floor(topLeft.y / gridSize) * gridSize;
+                const endY = Math.ceil(bottomRight.y / gridSize) * gridSize;
+
+                this.ctx.strokeStyle = "rgba(255, 255, 255, 0.03)";
+                this.ctx.lineWidth = 1;
+
+                for (let x = startX; x <= endX; x += gridSize) {
+                    const p1 = this.camera.worldToScreen(new Vec2(x, startY));
+                    const p2 = this.camera.worldToScreen(new Vec2(x, endY));
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(p1.x, p1.y);
+                    this.ctx.lineTo(p2.x, p2.y);
+                    this.ctx.stroke();
+                }
+                for (let y = startY; y <= endY; y += gridSize) {
+                    const p1 = this.camera.worldToScreen(new Vec2(startX, y));
+                    const p2 = this.camera.worldToScreen(new Vec2(endX, y));
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(p1.x, p1.y);
+                    this.ctx.lineTo(p2.x, p2.y);
+                    this.ctx.stroke();
+                }
+            }
+
+            drawMinimap() {
+                const mCtx = this.minimapCtx;
+                const mW = this.minimapCanvas.width;
+                const mH = this.minimapCanvas.height;
+                const scale = mW / WORLD_SIZE;
+
+                mCtx.fillStyle = "#0b0f19";
+                mCtx.fillRect(0, 0, mW, mH);
+
+                for (let ent of this.entities) {
+                    mCtx.fillStyle = ent.team === TEAM_PLAYER ? "#38bdf8" : (ent.team === TEAM_ENEMY ? "#ef4444" : "#0284c7");
+                    mCtx.fillRect(ent.pos.x * scale, ent.pos.y * scale, 3, 3);
+                }
+
+                // Camera frustum overlay on minimap
+                mCtx.strokeStyle = "#ffffff";
+                mCtx.lineWidth = 1;
+                const camScreenTopLeft = this.camera.screenToWorld(new Vec2(0,0));
+                const camScreenBotRight = this.camera.screenToWorld(new Vec2(this.canvas.width, this.canvas.height));
+                mCtx.strokeRect(
+                    camScreenTopLeft.x * scale,
+                    camScreenTopLeft.y * scale,
+                    (camScreenBotRight.x - camScreenTopLeft.x) * scale,
+                    (camScreenBotRight.y - camScreenTopLeft.y) * scale
+                );
+            }
+
+            loop(time) {
+                const dt = Math.min((time - this.lastTime) / 1000, 0.1); // Cap maximum Delta Time frame skip
+                this.lastTime = time;
+
+                this.update(dt);
+                this.draw();
+
+                requestAnimationFrame((t) => this.loop(t));
+            }
+        }
+
+        // Initialize Engine on load
+        window.onload = () => { new GameEngine(); };
+    </script>
 </body>
 </html>
