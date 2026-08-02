@@ -1,1 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reversi Strategy Game</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+    h1 { margin-bottom: 12px; font-size: 2.2rem; color: #38bdf8; }
+    .status-panel { display: flex; gap: 24px; align-items: center; margin-bottom: 20px; background: #1e293b; padding: 12px 24px; border-radius: 12px; border: 1px solid #334155; }
+    .score { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .disc-icon { width: 18px; height: 18px; border-radius: 50%; display: inline-block; }
+    .disc-black { background: #000; border: 2px solid #64748b; }
+    .disc-white { background: #fff; border: 2px solid #cbd5e1; }
+    .controls { display: flex; gap: 12px; margin-bottom: 20px; }
+    button, select { background: #334155; color: #fff; border: 1px solid #475569; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; font-weight: 500; }
+    button:hover, select:hover { background: #475569; }
+    #board { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; background: #0f5132; padding: 10px; border-radius: 10px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5); width: 100%; max-width: 480px; aspect-ratio: 1 / 1; }
+    .cell { background: #198754; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+    .cell.valid-move::after { content: ''; width: 28%; height: 28%; background: rgba(255, 255, 255, 0.4); border-radius: 50%; }
+    .cell.valid-move:hover::after { background: rgba(255, 255, 255, 0.8); }
+    .piece { width: 82%; height: 82%; border-radius: 50%; transition: transform 0.3s ease; }
+    .piece.black { background: #000; box-shadow: inset -2px -2px 5px rgba(255,255,255,0.25); }
+    .piece.white { background: #fff; box-shadow: inset -2px -2px 5px rgba(0,0,0,0.35); }
+    #message { margin-top: 16px; font-size: 1.1rem; font-weight: 600; height: 28px; color: #f59e0b; }
+  </style>
+</head>
+<body>
+  <h1>Reversi</h1>
+  <div class="status-panel">
+    <div class="score"><span class="disc-icon disc-black"></span> Black: <span id="black-score">2</span></div>
+    <div class="score"><span class="disc-icon disc-white"></span> White: <span id="white-score">2</span></div>
+  </div>
+  <div class="controls">
+    <button onclick="resetGame()">New Game</button>
+    <select id="mode-select" onchange="resetGame()">
+      <option value="ai">Vs AI (White)</option>
+      <option value="pvp">2 Players Local</option>
+    </select>
+  </div>
+  <div id="board"></div>
+  <div id="message">Turn: Black</div>
 
+  <script>
+    const BOARD_SIZE = 8;
+    const EMPTY = 0, BLACK = 1, WHITE = 2;
+    const DIRS = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+    
+    // Positional weight map favoring corners and edge stability
+    const WEIGHTS = [
+      [100, -20, 10,  5,  5, 10, -20, 100],
+      [-20, -50, -2, -2, -2, -2, -50, -20],
+      [ 10,  -2,  5,  2,  2,  5,  -2,  10],
+      [  5,  -2,  2,  1,  1,  2,  -2,   5],
+      [  5,  -2,  2,  1,  1,  2,  -2,   5],
+      [ 10,  -2,  5,  2,  2,  5,  -2,  10],
+      [-20, -50, -2, -2, -2, -2, -50, -20],
+      [100, -20, 10,  5,  5, 10, -20, 100]
+    ];
+
+    let board = [];
+    let currentPlayer = BLACK;
+    let isGameOver = false;
+
+    function initBoard() {
+      board = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(EMPTY));
+      board[3][3] = WHITE; board[3][4] = BLACK;
+      board[4][3] = BLACK; board[4][4] = WHITE;
+      currentPlayer = BLACK;
+      isGameOver = false;
+      render();
+    }
+
+    function render() {
+      const boardEl = document.getElementById('board');
+      boardEl.innerHTML = '';
+      const validMoves = getValidMoves(board, currentPlayer);
+
+      let blackCount = 0, whiteCount = 0;
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          if (board[r][c] === BLACK) blackCount++;
+          if (board[r][c] === WHITE) whiteCount++;
+
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          if (board[r][c] !== EMPTY) {
+            const piece = document.createElement('div');
+            piece.className = `piece ${board[r][c] === BLACK ? 'black' : 'white'}`;
+            cell.appendChild(piece);
+          } else if (!isGameOver && validMoves.some(m => m.r === r && m.c === c)) {
+            cell.classList.add('valid-move');
+            cell.addEventListener('click', () => handleMove(r, c));
+          }
+          boardEl.appendChild(cell);
+        }
+      }
+
+      document.getElementById('black-score').innerText = blackCount;
+      document.getElementById('white-score').innerText = whiteCount;
+
+      if (isGameOver) {
+        if (blackCount > whiteCount) document.getElementById('message').innerText = "Game Over! Black Wins!";
+        else if (whiteCount > blackCount) document.getElementById('message').innerText = "Game Over! White Wins!";
+        else document.getElementById('message').innerText = "Game Over! It's a Draw!";
+      } else {
+        document.getElementById('message').innerText = `Turn: ${currentPlayer === BLACK ? 'Black' : 'White'}`;
+      }
+    }
+
+    function getValidMoves(b, player) {
+      const moves = [];
+      for (let r = 0; r < BOARD_SIZE; r++) {
+        for (let c = 0; c < BOARD_SIZE; c++) {
+          if (b[r][c] === EMPTY) {
+            const flipped = getFlippedDiscs(b, r, c, player);
+            if (flipped.length > 0) moves.push({ r, c, flipped });
+          }
+        }
+      }
+      return moves;
+    }
+
+    function getFlippedDiscs(b, r, c, player) {
+      const opponent = player === BLACK ? WHITE : BLACK;
+      let flippedTotal = [];
+
+      for (let [dr, dc] of DIRS) {
+        let nr = r + dr, nc = c + dc;
+        let line = [];
+        while (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE && b[nr][nc] === opponent) {
+          line.push({ r: nr, c: nc });
+          nr += dr; nc += dc;
+        }
+        if (nr >= 0 && nr < BOARD_SIZE && nc >= 0 && nc < BOARD_SIZE && b[nr][nc] === player && line.length > 0) {
+          flippedTotal = flippedTotal.concat(line);
+        }
+      }
+      return flippedTotal;
+    }
+
+    function makeMove(r, c, flipped) {
+      board[r][c] = currentPlayer;
+      flipped.forEach(p => board[p.r][p.c] = currentPlayer);
+      currentPlayer = currentPlayer === BLACK ? WHITE : BLACK;
+      checkGameState();
+    }
+
+    function handleMove(r, c) {
+      const validMoves = getValidMoves(board, currentPlayer);
+      const move = validMoves.find(m => m.r === r && m.c === c);
+      if (!move) return;
+
+      makeMove(r, c, move.flipped);
+      render();
+
+      const mode = document.getElementById('mode-select').value;
+      if (!isGameOver && mode === 'ai' && currentPlayer === WHITE) {
+        setTimeout(aiMove, 400);
+      }
+    }
+
+    function aiMove() {
+      const validMoves = getValidMoves(board, WHITE);
+      if (validMoves.length === 0) return;
+
+      let bestMove = validMoves[0];
+      let bestScore = -Infinity;
+
+      for (let move of validMoves) {
+        let score = WEIGHTS[move.r][move.c] + (move.flipped.length * 2);
+        if (score > bestScore) {
+          bestScore = score;
+          bestMove = move;
+        }
+      }
+
+      makeMove(bestMove.r, bestMove.c, bestMove.flipped);
+      render();
+    }
+
+    function checkGameState() {
+      let validMoves = getValidMoves(board, currentPlayer);
+      if (validMoves.length === 0) {
+        currentPlayer = currentPlayer === BLACK ? WHITE : BLACK;
+        validMoves = getValidMoves(board, currentPlayer);
+        if (validMoves.length === 0) isGameOver = true;
+      }
+    }
+
+    function resetGame() { initBoard(); }
+    initBoard();
+  </script>
+</body>
+</html>
